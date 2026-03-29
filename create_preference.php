@@ -33,11 +33,11 @@ use MercadoPago\Client\Preference\PreferenceClient;
 use MercadoPago\MercadoPagoConfig;
 
 // ---- REEMPLAZAR con tu Access Token de producción ----
-MercadoPagoConfig::setAccessToken('APP_USR-TU-ACCESS-TOKEN-PRODUCCION');
+MercadoPagoConfig::setAccessToken('APP_USR-7634223680689579-032917-70c522dfd66ce90169590c50a72d7614-3302020268');
 
 // ---- Precio oficial (nunca confiar en el cliente) ----
 $PRICE_LIST = [
-    '1' => ['name' => 'iPhone 16 Pro Max',   'price' => 1299],
+    '1' => ['name' => 'iPhone 16 Pro Max',   'price' => 10],
     '2' => ['name' => 'iPhone 16',           'price' => 999 ],
     '3' => ['name' => 'iPad Pro M4',         'price' => 1099],
     '4' => ['name' => 'Apple Watch Ultra 2', 'price' => 799 ],
@@ -83,7 +83,7 @@ try {
     $client = new PreferenceClient();
 
     // Reemplazar con tu dominio real en Bluehost
-    $domain = 'https://tu-dominio.com';
+    $domain = 'https://layoutprueba.com';
 
     $preference = $client->create([
         'items'              => $mpItems,

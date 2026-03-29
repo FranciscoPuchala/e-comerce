@@ -24,7 +24,7 @@ const MP_ACCESS_TOKEN = defineSecret('MP_ACCESS_TOKEN');
 // IMPORTANT: These prices must match what's shown to the user.
 // Never trust prices sent from the client.
 const PRICE_LIST = {
-  '1': { name: 'iPhone 16 Pro Max',   price: 1299 },
+  '1': { name: 'iPhone 16 Pro Max',   price: 10 },
   '2': { name: 'iPhone 16',           price: 999  },
   '3': { name: 'iPad Pro M4',         price: 1099 },
   '4': { name: 'Apple Watch Ultra 2', price: 799  },

@@ -9,7 +9,7 @@ export const PRODUCTS = [
     id: '1',
     name: 'iPhone 16 Pro Max',
     category: 'iPhone',
-    price: 1299,
+    price: 10,
     description: 'Titanio. A18 Pro. El iPhone más avanzado jamás creado.',
     image: 'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=600&q=80',
     badge: 'Nuevo',
