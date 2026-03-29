@@ -14,10 +14,9 @@ import {
   serverTimestamp,
 } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
-// ---- IMPORTANT: Set your Firebase Cloud Function URL here ----
-// After deploying functions, replace with the real URL:
-// e.g. https://us-central1-tu-proyecto.cloudfunctions.net/createPreference
-const FUNCTIONS_URL = 'https://us-central1-TU-PROYECTO.cloudfunctions.net';
+// ---- Entorno: detecta automáticamente si estás en GitHub Pages (demo) o Bluehost (producción) ----
+const IS_GITHUB_PAGES = window.location.hostname.includes('github.io');
+const PAYMENT_ENDPOINT = IS_GITHUB_PAGES ? null : '/create_preference.php';
 
 // ---- Render order summary ----
 function renderSummary() {
@@ -124,11 +123,11 @@ async function saveOrderToFirestore(formData, paymentMethod) {
   return docRef.id;
 }
 
-// ---- Call Cloud Function to create MercadoPago preference ----
+// ---- Call PHP backend to create MercadoPago preference (solo en Bluehost) ----
 async function createMercadoPagoPreference(orderId, formData) {
   const items = Cart.get();
 
-  const response = await fetch(`${FUNCTIONS_URL}/createPreference`, {
+  const response = await fetch(PAYMENT_ENDPOINT, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -199,8 +198,21 @@ async function handlePay() {
     // 2. Payment flow
     if (paymentMethod === 'transfer') {
       handleBankTransfer(orderId);
+    } else if (!PAYMENT_ENDPOINT) {
+      // Modo demo (GitHub Pages) — sin backend real
+      showToast('Pedido registrado. Pago simulado en modo demo.', 'success');
+      payStatus.innerHTML = `
+        <strong>✅ Pedido #${orderId.slice(-8).toUpperCase()} registrado</strong><br>
+        <span style="color:var(--text-muted)">
+          Este es un sitio demo. En producción se redirigirá a MercadoPago para completar el pago.
+        </span><br><br>
+        <a href="../index.html" class="btn btn-ghost btn-sm">Volver al inicio</a>
+      `;
+      Cart.clear();
+      updateCartBadge();
+      payBtn.style.display = 'none';
     } else {
-      // MercadoPago flow
+      // MercadoPago flow (Bluehost producción)
       payStatus.textContent = 'Redirigiendo a MercadoPago...';
       const { init_point } = await createMercadoPagoPreference(orderId, formData);
       Cart.clear();
