@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contacto — iPlace</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/main.css">
+</head>
+<body>
+
+  <header class="site-header" id="header">
+    <nav class="nav-container">
+      <a href="../index.html" class="logo">iPlace</a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="../index.html">Inicio</a></li>
+        <li><a href="../Productos/index.html">Productos</a></li>
+        <li><a href="index.html" class="active">Contacto</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a href="../Carrito/index.html" class="cart-btn" aria-label="Ver carrito">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+          </svg>
+          Carrito
+          <span class="cart-count hidden" id="cartCount">0</span>
+        </a>
+        <button class="hamburger" id="hamburger" aria-label="Menú" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <div class="container">
+        <h1>Contactanos</h1>
+        <p>Estamos para ayudarte. Respondemos en menos de 24 horas.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="contact-grid">
+
+          <!-- Contact info -->
+          <div class="contact-info">
+            <h2>Hablemos</h2>
+            <p style="margin-bottom: 32px;">Tenés preguntas sobre un producto, un pedido o necesitás soporte técnico. Escribinos y te respondemos a la brevedad.</p>
+
+            <div class="contact-card">
+              <div class="contact-icon">📧</div>
+              <div>
+                <h4>Email</h4>
+                <p><a href="mailto:info@iplace.com" style="color:var(--accent)">info@iplace.com</a></p>
+                <p style="font-size:0.8rem">Respondemos en 24 hs hábiles</p>
+              </div>
+            </div>
+
+            <div class="contact-card">
+              <div class="contact-icon">📞</div>
+              <div>
+                <h4>Teléfono</h4>
+                <p><a href="tel:+541145678900" style="color:var(--accent)">+54 11 4567-8900</a></p>
+                <p style="font-size:0.8rem">Lunes a viernes, 9 a 18 hs</p>
+              </div>
+            </div>
+
+            <div class="contact-card">
+              <div class="contact-icon">📍</div>
+              <div>
+                <h4>Ubicación</h4>
+                <p>Av. Santa Fe 1234, Piso 3</p>
+                <p style="font-size:0.8rem">Buenos Aires, Argentina</p>
+              </div>
+            </div>
+
+            <div class="contact-card">
+              <div class="contact-icon">💬</div>
+              <div>
+                <h4>WhatsApp</h4>
+                <p><a href="https://wa.me/5491145678900" style="color:var(--accent)" target="_blank" rel="noopener">Escribinos por WhatsApp</a></p>
+                <p style="font-size:0.8rem">Respuesta inmediata en horario comercial</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Contact form -->
+          <div class="contact-form-card">
+            <h3>Envianos un mensaje</h3>
+
+            <div id="formSuccess" style="display:none" class="status-page" style="min-height:auto;padding:40px 0">
+              <div class="status-icon">✅</div>
+              <h3>¡Mensaje enviado!</h3>
+              <p>Te responderemos a la brevedad al email que indicaste.</p>
+              <button class="btn btn-ghost btn-sm" id="resetFormBtn" style="margin-top:16px">Enviar otro mensaje</button>
+            </div>
+
+            <form id="contactForm" novalidate>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="contactName">Nombre *</label>
+                  <input type="text" id="contactName" class="form-input" placeholder="Tu nombre" required>
+                  <p class="field-error" id="contactNameError"></p>
+                </div>
+                <div class="form-group">
+                  <label for="contactEmail">Email *</label>
+                  <input type="email" id="contactEmail" class="form-input" placeholder="tu@email.com" required>
+                  <p class="field-error" id="contactEmailError"></p>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="contactSubject">Asunto *</label>
+                <input type="text" id="contactSubject" class="form-input" placeholder="¿En qué podemos ayudarte?" required>
+                <p class="field-error" id="contactSubjectError"></p>
+              </div>
+              <div class="form-group">
+                <label for="contactMessage">Mensaje *</label>
+                <textarea
+                  id="contactMessage"
+                  class="form-input"
+                  rows="5"
+                  placeholder="Escribí tu consulta aquí..."
+                  required
+                  style="resize:vertical"
+                ></textarea>
+                <p class="field-error" id="contactMessageError"></p>
+              </div>
+              <button type="submit" class="btn btn-primary btn-full" id="submitBtn">
+                Enviar mensaje
+              </button>
+            </form>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="logo">iPlace</div>
+        <p>Tu distribuidor oficial Apple.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Tienda</h5>
+        <a href="../Productos/index.html">Todos los productos</a>
+      </div>
+      <div class="footer-col">
+        <h5>Soporte</h5>
+        <a href="index.html">Contacto</a>
+        <a href="#">Devoluciones</a>
+      </div>
+      <div class="footer-col">
+        <h5>Legal</h5>
+        <a href="#">Privacidad</a>
+        <a href="#">Términos</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 iPlace. Todos los derechos reservados.</span>
+    </div>
+  </footer>
+
+  <div class="notification" id="toastContainer" aria-live="polite"></div>
+
+  <script type="module" src="contacto.js"></script>
+</body>
+</html>

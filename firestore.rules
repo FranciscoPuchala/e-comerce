@@ -1,0 +1,23 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Orders: only Cloud Functions (admin SDK) can write.
+    // Nobody reads orders from the client.
+    match /orders/{orderId} {
+      allow read, write: if false;
+    }
+
+    // Contacts: anyone can create (submit form), nobody can read from client.
+    match /contacts/{docId} {
+      allow create: if
+        request.resource.data.keys().hasAll(['name', 'email', 'subject', 'message']) &&
+        request.resource.data.name is string &&
+        request.resource.data.email is string &&
+        request.resource.data.message.size() >= 10;
+      allow read, update, delete: if false;
+    }
+
+  }
+}

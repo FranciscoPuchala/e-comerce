@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carrito — iPlace</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/main.css">
+</head>
+<body>
+
+  <header class="site-header" id="header">
+    <nav class="nav-container">
+      <a href="../index.html" class="logo">iPlace</a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="../index.html">Inicio</a></li>
+        <li><a href="../Productos/index.html">Productos</a></li>
+        <li><a href="../Contacto/index.html">Contacto</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a href="index.html" class="cart-btn" aria-label="Ver carrito">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+          </svg>
+          Carrito
+          <span class="cart-count hidden" id="cartCount">0</span>
+        </a>
+        <button class="hamburger" id="hamburger" aria-label="Menú" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <div class="container">
+        <h1>Tu carrito</h1>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+
+        <!-- Empty state -->
+        <div class="cart-empty" id="cartEmpty" style="display:none">
+          <div class="icon">🛒</div>
+          <h3>Tu carrito está vacío</h3>
+          <p>Explorá nuestros productos y encontrá lo que buscás.</p>
+          <a href="../Productos/index.html" class="btn btn-primary">Ver productos</a>
+        </div>
+
+        <!-- Cart with items -->
+        <div id="cartContent" class="cart-layout">
+          <!-- Left: items -->
+          <div>
+            <div class="cart-list" id="cartList">
+              <!-- Rendered by JS -->
+            </div>
+            <div style="margin-top:16px">
+              <a href="../Productos/index.html" class="btn btn-ghost btn-sm">← Seguir comprando</a>
+            </div>
+          </div>
+
+          <!-- Right: summary -->
+          <aside class="order-summary">
+            <h3>Resumen del pedido</h3>
+
+            <div class="summary-row">
+              <span>Subtotal</span>
+              <span id="summarySubtotal">$0</span>
+            </div>
+            <div class="summary-row" id="discountRow" style="display:none">
+              <span id="discountLabel">Descuento</span>
+              <span id="discountAmount" style="color:var(--success)">−$0</span>
+            </div>
+            <div class="summary-row">
+              <span>Envío</span>
+              <span style="color:var(--success)">Gratis</span>
+            </div>
+            <div class="divider"></div>
+            <div class="summary-row total">
+              <span>Total</span>
+              <span id="summaryTotal">$0</span>
+            </div>
+
+            <!-- Promo code -->
+            <div class="promo-form" style="margin-top:20px">
+              <input
+                type="text"
+                id="promoInput"
+                class="promo-input"
+                placeholder="Código de descuento"
+                aria-label="Código de descuento"
+              >
+              <button class="btn btn-ghost btn-sm" id="promoBtn">Aplicar</button>
+            </div>
+            <p class="promo-feedback" id="promoFeedback"></p>
+
+            <a href="../Checkout/index.html" class="btn btn-primary btn-full" style="margin-top:20px" id="checkoutBtn">
+              Finalizar compra →
+            </a>
+
+            <div style="display:flex;gap:12px;justify-content:center;margin-top:16px;font-size:0.8rem;color:var(--text-muted)">
+              <span>🔒 Pago seguro</span>
+              <span>·</span>
+              <span>✓ Garantía oficial</span>
+            </div>
+          </aside>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="logo">iPlace</div>
+        <p>Tu distribuidor oficial Apple.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Tienda</h5>
+        <a href="../Productos/index.html">Todos los productos</a>
+      </div>
+      <div class="footer-col">
+        <h5>Soporte</h5>
+        <a href="../Contacto/index.html">Contacto</a>
+      </div>
+      <div class="footer-col">
+        <h5>Legal</h5>
+        <a href="#">Privacidad</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 iPlace. Todos los derechos reservados.</span>
+    </div>
+  </footer>
+
+  <div class="notification" id="toastContainer" aria-live="polite"></div>
+
+  <script type="module" src="carrito.js"></script>
+</body>
+</html>

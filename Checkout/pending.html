@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pago pendiente — iPlace</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/main.css">
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav-container">
+      <a href="../index.html" class="logo">iPlace</a>
+    </nav>
+  </header>
+  <main class="status-page">
+    <div>
+      <div class="status-icon">⏳</div>
+      <h2>Pago en proceso</h2>
+      <p>Tu pago está siendo procesado. Te notificaremos por email cuando se confirme. Esto puede tardar hasta 2 días hábiles.</p>
+      <a href="../index.html" class="btn btn-primary">Volver al inicio</a>
+    </div>
+  </main>
+  <script type="module">
+    import { Cart } from '../js/cart-utils.js';
+    Cart.clear();
+  </script>
+</body>
+</html>

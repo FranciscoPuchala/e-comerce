@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pago exitoso — iPlace</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/main.css">
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav-container">
+      <a href="../index.html" class="logo">iPlace</a>
+    </nav>
+  </header>
+  <main class="status-page">
+    <div>
+      <div class="status-icon">✅</div>
+      <h2>¡Pago exitoso!</h2>
+      <p>Tu pedido fue recibido y está siendo procesado. Recibirás un email de confirmación a la brevedad.</p>
+      <a href="../index.html" class="btn btn-primary btn-lg">Volver al inicio</a>
+    </div>
+  </main>
+  <script type="module">
+    import { Cart } from '../js/cart-utils.js';
+    Cart.clear();
+  </script>
+</body>
+</html>
