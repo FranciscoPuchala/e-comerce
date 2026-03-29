@@ -1,19 +1,12 @@
 <?php
 // ============================================================
 //  MercadoPago — Crear preferencia de pago
-//  Este archivo va en Bluehost (raíz del sitio).
-//
-//  Instalación en Bluehost:
-//    1. Subir todos los archivos del sitio por FTP o File Manager
-//    2. Desde el File Manager o SSH, instalar Composer:
-//       curl -sS https://getcomposer.org/installer | php
-//       php composer.phar require mercadopago/dx-php
-//    3. Reemplazar MP_ACCESS_TOKEN con tu token real
+//  Sin dependencias externas, usa curl nativo de PHP.
 // ============================================================
 
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: POST');
+header('Access-Control-Allow-Methods: POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
@@ -27,24 +20,19 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-require_once __DIR__ . '/vendor/autoload.php';
+// ---- Access Token ----
+$ACCESS_TOKEN = 'APP_USR-7634223680689579-032917-70c522dfd66ce90169590c50a72d7614-3302020268';
 
-use MercadoPago\Client\Preference\PreferenceClient;
-use MercadoPago\MercadoPagoConfig;
-
-// ---- REEMPLAZAR con tu Access Token de producción ----
-MercadoPagoConfig::setAccessToken('APP_USR-7634223680689579-032917-70c522dfd66ce90169590c50a72d7614-3302020268');
-
-// ---- Precio oficial (nunca confiar en el cliente) ----
+// ---- Precio oficial del servidor (nunca confiar en el cliente) ----
 $PRICE_LIST = [
     '1' => ['name' => 'iPhone 16 Pro Max',   'price' => 10],
-    '2' => ['name' => 'iPhone 16',           'price' => 999 ],
+    '2' => ['name' => 'iPhone 16',           'price' => 999],
     '3' => ['name' => 'iPad Pro M4',         'price' => 1099],
-    '4' => ['name' => 'Apple Watch Ultra 2', 'price' => 799 ],
-    '5' => ['name' => 'AirPods Pro 2',       'price' => 249 ],
+    '4' => ['name' => 'Apple Watch Ultra 2', 'price' => 799],
+    '5' => ['name' => 'AirPods Pro 2',       'price' => 249],
     '6' => ['name' => 'MacBook Air M3',      'price' => 1099],
-    '7' => ['name' => 'Funda de Silicona',   'price' => 49  ],
-    '8' => ['name' => 'Cargador MagSafe',    'price' => 39  ],
+    '7' => ['name' => 'Funda de Silicona',   'price' => 49],
+    '8' => ['name' => 'Cargador MagSafe',    'price' => 39],
 ];
 
 $body    = json_decode(file_get_contents('php://input'), true);
@@ -79,36 +67,51 @@ foreach ($items as $item) {
     ];
 }
 
-try {
-    $client = new PreferenceClient();
+// ---- Llamar a la API de MercadoPago con curl ----
+$domain = 'https://layoutprueba.com';
 
-    // Reemplazar con tu dominio real en Bluehost
-    $domain = 'https://layoutprueba.com';
+$payload = [
+    'items'              => $mpItems,
+    'payer'              => [
+        'name'    => $payer['name']    ?? '',
+        'surname' => $payer['surname'] ?? '',
+        'email'   => $payer['email'],
+    ],
+    'external_reference' => $orderId,
+    'back_urls'          => [
+        'success' => "$domain/Checkout/success.html",
+        'failure' => "$domain/Checkout/failure.html",
+        'pending' => "$domain/Checkout/pending.html",
+    ],
+    'auto_return' => 'approved',
+    'statement_descriptor' => 'iPlace',
+];
 
-    $preference = $client->create([
-        'items'              => $mpItems,
-        'payer'              => [
-            'name'    => $payer['name']    ?? '',
-            'surname' => $payer['surname'] ?? '',
-            'email'   => $payer['email'],
-        ],
-        'external_reference' => $orderId,
-        'back_urls'          => [
-            'success' => "$domain/Checkout/success.html",
-            'failure' => "$domain/Checkout/failure.html",
-            'pending' => "$domain/Checkout/pending.html",
-        ],
-        'auto_return'        => 'approved',
-        'statement_descriptor' => 'iPlace',
-    ]);
+$ch = curl_init('https://api.mercadopago.com/checkout/preferences');
+curl_setopt_array($ch, [
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_POST           => true,
+    CURLOPT_POSTFIELDS     => json_encode($payload),
+    CURLOPT_HTTPHEADER     => [
+        'Content-Type: application/json',
+        'Authorization: Bearer ' . $ACCESS_TOKEN,
+    ],
+]);
 
-    echo json_encode([
-        'preferenceId' => $preference->id,
-        'init_point'   => $preference->init_point,
-    ]);
+$response = curl_exec($ch);
+$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+curl_close($ch);
 
-} catch (Exception $e) {
-    error_log('MercadoPago error: ' . $e->getMessage());
+if ($httpCode !== 201) {
+    error_log('MercadoPago error: ' . $response);
     http_response_code(500);
-    echo json_encode(['error' => 'Error al procesar el pago']);
+    echo json_encode(['error' => 'Error al crear preferencia de pago']);
+    exit;
 }
+
+$data = json_decode($response, true);
+
+echo json_encode([
+    'preferenceId' => $data['id'],
+    'init_point'   => $data['init_point'],
+]);
