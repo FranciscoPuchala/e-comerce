@@ -5,13 +5,14 @@
 import { Cart, updateCartBadge, showToast, initHeader, formatPrice } from './cart-utils.js';
 import { getFeaturedProducts, getAccessories } from './products-data.js';
 
-// ---- Build a product card HTML ----
-function buildCard(product) {
+function buildCard(product, delay = 0) {
   const badge = product.badge
     ? `<span class="badge badge-new">${product.badge}</span>`
     : '';
   return `
-    <article class="product-card fade-in-up" data-id="${product.id}">
+    <article class="product-card reveal reveal-delay-${delay}"
+      onclick="window.location.href='Producto/index.html?id=${product.id}'"
+      role="button" tabindex="0" aria-label="Ver ${product.name}">
       <div class="product-img-wrap">
         <img src="${product.image}" alt="${product.name}" loading="lazy">
       </div>
@@ -21,7 +22,7 @@ function buildCard(product) {
         <p class="product-desc">${product.description}</p>
         <div class="product-footer">
           <span class="product-price">${formatPrice(product.price)}</span>
-          <button class="add-to-cart-btn" data-id="${product.id}">
+          <button class="add-to-cart-btn" data-id="${product.id}" onclick="event.stopPropagation()">
             + Agregar
           </button>
         </div>
@@ -29,57 +30,63 @@ function buildCard(product) {
     </article>`;
 }
 
-// ---- Render grids ----
 function renderFeatured() {
   const grid = document.getElementById('featuredGrid');
   if (!grid) return;
-  const products = getFeaturedProducts();
-  grid.innerHTML = products.map(buildCard).join('');
+  grid.innerHTML = getFeaturedProducts().map((p, i) => buildCard(p, (i % 4) + 1)).join('');
 }
 
 function renderAccessories() {
   const grid = document.getElementById('accessoriesGrid');
   if (!grid) return;
-  const products = getAccessories();
-  grid.innerHTML = products.map(buildCard).join('');
+  grid.innerHTML = getAccessories().map((p, i) => buildCard(p, (i % 4) + 1)).join('');
 }
 
-// ---- Add to cart handler (event delegation) ----
 function initAddToCart() {
   document.querySelectorAll('.product-grid').forEach(grid => {
     grid.addEventListener('click', (e) => {
       const btn = e.target.closest('.add-to-cart-btn');
       if (!btn) return;
-      e.stopPropagation();
 
       const id = btn.dataset.id;
       const card = btn.closest('.product-card');
       const name = card.querySelector('.product-name').textContent;
       const priceText = card.querySelector('.product-price').textContent;
       const image = card.querySelector('img').src;
-      const category = card.querySelector('.product-category').textContent.trim();
-      // Parse formatted price back to number
-      const price = parseFloat(priceText.replace(/[^0-9,]/g, '').replace(',', '.'));
+      const category = card.querySelector('.product-category').textContent.trim().split('\n')[0].trim();
+      const price = parseFloat(priceText.replace(/[^0-9,.]/g, '').replace(',', '.'));
 
       Cart.add({ id, name, price, image, category });
       updateCartBadge();
       showToast(`${name} agregado al carrito`, 'success');
 
-      btn.textContent = '✓ Agregado';
+      btn.textContent = '✓';
       btn.style.background = 'var(--success)';
-      setTimeout(() => {
-        btn.textContent = '+ Agregar';
-        btn.style.background = '';
-      }, 1500);
+      setTimeout(() => { btn.textContent = '+ Agregar'; btn.style.background = ''; }, 1500);
+
+      document.getElementById('cartCount')?.classList.add('bump');
+      setTimeout(() => document.getElementById('cartCount')?.classList.remove('bump'), 400);
     });
   });
 }
 
-// ---- Init ----
+function initReveal() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   initHeader();
   updateCartBadge();
   renderFeatured();
   renderAccessories();
   initAddToCart();
+  setTimeout(initReveal, 50);
 });

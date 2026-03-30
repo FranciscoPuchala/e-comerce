@@ -3,10 +3,13 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Orders: only Cloud Functions (admin SDK) can write.
-    // Nobody reads orders from the client.
+    // Orders: cualquiera puede crear, nadie puede leer/editar desde el cliente.
     match /orders/{orderId} {
-      allow read, write: if false;
+      allow create: if
+        request.resource.data.keys().hasAll(['customer', 'items', 'total', 'status']) &&
+        request.resource.data.total is number &&
+        request.resource.data.total > 0;
+      allow read, update, delete: if false;
     }
 
     // Contacts: anyone can create (submit form), nobody can read from client.

@@ -7,19 +7,16 @@ import { PRODUCTS, CATEGORIES, getProductsByCategory } from '../js/products-data
 
 let activeCategory = 'Todos';
 
-// ---- Read category from URL (?categoria=iPhone) ----
 function getCategoryFromURL() {
-  const params = new URLSearchParams(window.location.search);
-  return params.get('categoria') ?? 'Todos';
+  return new URLSearchParams(window.location.search).get('categoria') ?? 'Todos';
 }
 
-// ---- Build product card ----
 function buildCard(product) {
-  const badge = product.badge
-    ? `<span class="badge badge-new">${product.badge}</span>`
-    : '';
+  const badge = product.badge ? `<span class="badge badge-new">${product.badge}</span>` : '';
   return `
-    <article class="product-card" data-id="${product.id}">
+    <article class="product-card"
+      onclick="window.location.href='../Producto/index.html?id=${product.id}'"
+      role="button" tabindex="0" aria-label="Ver ${product.name}">
       <div class="product-img-wrap">
         <img src="${product.image}" alt="${product.name}" loading="lazy">
       </div>
@@ -29,7 +26,7 @@ function buildCard(product) {
         <p class="product-desc">${product.description}</p>
         <div class="product-footer">
           <span class="product-price">${formatPrice(product.price)}</span>
-          <button class="add-to-cart-btn" data-id="${product.id}">
+          <button class="add-to-cart-btn" data-id="${product.id}" onclick="event.stopPropagation()">
             + Agregar
           </button>
         </div>
@@ -37,7 +34,6 @@ function buildCard(product) {
     </article>`;
 }
 
-// ---- Render category filter buttons ----
 function renderCategories() {
   const container = document.getElementById('categoryFilter');
   if (!container) return;
@@ -58,7 +54,6 @@ function renderCategories() {
   });
 }
 
-// ---- Render filtered products ----
 function renderProducts() {
   const grid = document.getElementById('productGrid');
   const noResults = document.getElementById('noResults');
@@ -68,21 +63,20 @@ function renderProducts() {
   noResults.style.display = products.length === 0 ? '' : 'none';
   grid.innerHTML = products.map(buildCard).join('');
 
-  // Animate cards
+  // Staggered entrance animation
   grid.querySelectorAll('.product-card').forEach((card, i) => {
     card.style.opacity = '0';
-    card.style.transform = 'translateY(20px)';
+    card.style.transform = 'translateY(28px)';
     requestAnimationFrame(() => {
       setTimeout(() => {
-        card.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+        card.style.transition = 'opacity 0.45s cubic-bezier(0,0,0.2,1), transform 0.45s cubic-bezier(0,0,0.2,1), box-shadow 0.25s, border-color 0.25s';
         card.style.opacity = '1';
         card.style.transform = '';
-      }, i * 60);
+      }, i * 70);
     });
   });
 }
 
-// ---- Add to cart handler ----
 function initAddToCart() {
   const grid = document.getElementById('productGrid');
   if (!grid) return;
@@ -100,16 +94,15 @@ function initAddToCart() {
     updateCartBadge();
     showToast(`${product.name} agregado al carrito`, 'success');
 
-    btn.textContent = '✓ Agregado';
+    btn.textContent = '✓';
     btn.style.background = 'var(--success)';
-    setTimeout(() => {
-      btn.textContent = '+ Agregar';
-      btn.style.background = '';
-    }, 1500);
+    setTimeout(() => { btn.textContent = '+ Agregar'; btn.style.background = ''; }, 1500);
+
+    document.getElementById('cartCount')?.classList.add('bump');
+    setTimeout(() => document.getElementById('cartCount')?.classList.remove('bump'), 400);
   });
 }
 
-// ---- Init ----
 document.addEventListener('DOMContentLoaded', () => {
   initHeader();
   updateCartBadge();

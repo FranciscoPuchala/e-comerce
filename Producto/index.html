@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Producto — iPlace</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/main.css">
+</head>
+<body>
+
+  <header class="site-header" id="header">
+    <nav class="nav-container">
+      <a href="../index.html" class="logo">iPlace</a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="../index.html">Inicio</a></li>
+        <li><a href="../Productos/index.html" class="active">Productos</a></li>
+        <li><a href="../Contacto/index.html">Contacto</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a href="../Carrito/index.html" class="cart-btn" aria-label="Ver carrito">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+          </svg>
+          Carrito
+          <span class="cart-count hidden" id="cartCount">0</span>
+        </a>
+        <button class="hamburger" id="hamburger" aria-label="Menú" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <div id="productNotFound" style="display:none" class="status-page">
+      <div class="status-icon">🔍</div>
+      <h2>Producto no encontrado</h2>
+      <p>El producto que buscás no existe o fue removido.</p>
+      <a href="../Productos/index.html" class="btn btn-primary">Ver todos los productos</a>
+    </div>
+
+    <div id="productContent" style="display:none">
+      <section class="section" style="padding-top: 40px; padding-bottom: 80px;">
+        <div class="container">
+
+          <a href="../Productos/index.html" class="back-link" id="backLink">
+            ← Volver a productos
+          </a>
+
+          <div class="product-detail">
+            <!-- Imagen -->
+            <div class="product-detail-gallery reveal">
+              <div class="product-detail-main-img">
+                <img id="detailImg" src="" alt="">
+              </div>
+            </div>
+
+            <!-- Info -->
+            <div class="product-detail-info">
+              <div class="reveal">
+                <div class="product-detail-category" id="detailCategory"></div>
+                <h1 class="product-detail-name" id="detailName"></h1>
+              </div>
+
+              <div class="product-detail-price reveal reveal-delay-1" id="detailPrice"></div>
+
+              <p class="product-detail-desc reveal reveal-delay-1" id="detailDesc"></p>
+
+              <!-- Features -->
+              <div class="product-features reveal reveal-delay-2" id="detailFeatures"></div>
+
+              <!-- Qty + Add to cart -->
+              <div class="reveal reveal-delay-3">
+                <div style="display:flex; align-items:center; gap:16px; margin-bottom:16px">
+                  <span style="font-size:0.875rem;font-weight:500;color:var(--text-muted)">Cantidad</span>
+                  <div class="qty-selector">
+                    <button id="qtyMinus" aria-label="Reducir">−</button>
+                    <span id="qtyValue">1</span>
+                    <button id="qtyPlus" aria-label="Aumentar">+</button>
+                  </div>
+                </div>
+                <div class="product-detail-actions">
+                  <button class="btn btn-primary btn-lg" id="addToCartBtn">
+                    🛒 Agregar al carrito
+                  </button>
+                  <a href="../Carrito/index.html" class="btn btn-secondary btn-lg" id="buyNowBtn">
+                    Comprar ahora
+                  </a>
+                </div>
+                <div style="display:flex;gap:20px;margin-top:16px;font-size:0.8rem;color:var(--text-muted)">
+                  <span>🚚 Envío gratis</span>
+                  <span>🔒 Pago seguro</span>
+                  <span>🔄 30 días devolución</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Related products -->
+      <section class="section section-alt">
+        <div class="container">
+          <h2 class="section-title reveal">También te puede interesar</h2>
+          <div class="product-grid" id="relatedGrid"></div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="logo">iPlace</div>
+        <p>Tu distribuidor oficial Apple.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Tienda</h5>
+        <a href="../Productos/index.html">Todos los productos</a>
+      </div>
+      <div class="footer-col">
+        <h5>Soporte</h5>
+        <a href="../Contacto/index.html">Contacto</a>
+      </div>
+      <div class="footer-col">
+        <h5>Legal</h5>
+        <a href="#">Privacidad</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 iPlace. Todos los derechos reservados.</span>
+    </div>
+  </footer>
+
+  <div class="notification" id="toastContainer" aria-live="polite"></div>
+
+  <script type="module" src="producto.js"></script>
+</body>
+</html>
