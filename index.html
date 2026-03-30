@@ -40,6 +40,7 @@
 
     <!-- Nav links con mega menú -->
     <ul class="nav-links" id="navLinks">
+      <div class="nav-pill" id="navPill"></div>
       <li class="nav-item">
         <a href="index.html" class="active">Inicio</a>
       </li>
@@ -494,6 +495,25 @@
       window.location.href = `Productos/index.html?q=${encodeURIComponent(searchInput.value.trim())}`;
     }
   });
+
+  // ---- Sliding nav pill indicator ----
+  (function() {
+    const nav  = document.getElementById('navLinks');
+    const pill = document.getElementById('navPill');
+    if (!nav || !pill) return;
+    const items = nav.querySelectorAll('.nav-item > a');
+    function movePill(el) {
+      const navRect  = nav.getBoundingClientRect();
+      const linkRect = el.getBoundingClientRect();
+      pill.style.left  = (linkRect.left - navRect.left) + 'px';
+      pill.style.width = linkRect.width + 'px';
+    }
+    items.forEach(a => {
+      a.addEventListener('mouseenter', () => movePill(a));
+    });
+    nav.addEventListener('mouseleave', () => { pill.style.opacity = '0'; });
+    nav.addEventListener('mouseenter', () => { pill.style.opacity = '1'; });
+  })();
 </script>
 <script type="module">
   // Counter animation for stats

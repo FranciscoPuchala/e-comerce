@@ -27,6 +27,7 @@
   <nav class="nav-container">
     <div class="logo-wrap"><a href="../index.html" class="logo">iPlace</a></div>
     <ul class="nav-links" id="navLinks">
+      <div class="nav-pill" id="navPill"></div>
       <li class="nav-item"><a href="../index.html">Inicio</a></li>
       <li class="nav-item">
         <a href="../Productos/index.html">Productos <span class="nav-arrow">▾</span></a>
@@ -194,5 +195,22 @@
   <div class="notification" id="toastContainer" aria-live="polite"></div>
 
   <script type="module" src="contacto.js"></script>
+<script>
+  // Sliding nav pill
+  (function(){
+    var nav=document.getElementById('navLinks');
+    var pill=document.getElementById('navPill');
+    if(!nav||!pill) return;
+    var items=nav.querySelectorAll('.nav-item > a');
+    function move(el){
+      var nr=nav.getBoundingClientRect(),lr=el.getBoundingClientRect();
+      pill.style.left=(lr.left-nr.left)+'px';
+      pill.style.width=lr.width+'px';
+    }
+    items.forEach(function(a){ a.addEventListener('mouseenter',function(){move(a);}); });
+    nav.addEventListener('mouseleave',function(){ pill.style.opacity='0'; });
+    nav.addEventListener('mouseenter',function(){ pill.style.opacity='1'; });
+  })();
+</script>
 </body>
 </html>
