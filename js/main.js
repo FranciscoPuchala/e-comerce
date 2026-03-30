@@ -4,13 +4,14 @@
 
 import { Cart, updateCartBadge, showToast, initHeader, formatPrice } from './cart-utils.js';
 import { getFeaturedProducts, getAccessories } from './products-data.js';
+import { initScrollFX } from './scroll-fx.js';
 
-function buildCard(product, delay = 0) {
+function buildCard(product) {
   const badge = product.badge
     ? `<span class="badge badge-new">${product.badge}</span>`
     : '';
   return `
-    <article class="product-card reveal reveal-delay-${delay}"
+    <article class="product-card sfx-scale"
       onclick="window.location.href='Producto/index.html?id=${product.id}'"
       role="button" tabindex="0" aria-label="Ver ${product.name}">
       <div class="product-img-wrap">
@@ -33,13 +34,13 @@ function buildCard(product, delay = 0) {
 function renderFeatured() {
   const grid = document.getElementById('featuredGrid');
   if (!grid) return;
-  grid.innerHTML = getFeaturedProducts().map((p, i) => buildCard(p, (i % 4) + 1)).join('');
+  grid.innerHTML = getFeaturedProducts().map(p => buildCard(p)).join('');
 }
 
 function renderAccessories() {
   const grid = document.getElementById('accessoriesGrid');
   if (!grid) return;
-  grid.innerHTML = getAccessories().map((p, i) => buildCard(p, (i % 4) + 1)).join('');
+  grid.innerHTML = getAccessories().map(p => buildCard(p)).join('');
 }
 
 function initAddToCart() {
@@ -88,5 +89,8 @@ document.addEventListener('DOMContentLoaded', () => {
   renderFeatured();
   renderAccessories();
   initAddToCart();
-  setTimeout(initReveal, 50);
+  setTimeout(() => {
+    initReveal();
+    initScrollFX();
+  }, 80);
 });
