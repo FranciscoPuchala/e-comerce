@@ -37,7 +37,7 @@
   --t-fast: 0.15s;
   --t: 0.25s;
   --t-slow: 0.5s;
-  --header-h: 56px;
+  --header-h: 72px;
   --max-w: 1200px;
 }
 
@@ -732,7 +732,7 @@ label{display:block;font-size:.875rem;font-weight:600;color:var(--text);margin-b
   .product-grid.featured-grid{grid-template-columns:repeat(2,1fr)}
 }
 @media(max-width:640px){
-  :root{--header-h:56px}
+  :root{--header-h:64px}
   .section{padding:64px 0}
   .hero{min-height:75vh;padding:80px 20px 60px}
   .stats-grid{grid-template-columns:repeat(2,1fr)}
