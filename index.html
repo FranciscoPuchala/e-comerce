@@ -8,21 +8,106 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/header.css">
 </head>
 <body>
+
+<!-- ══════════════════════════════════════════════
+     ANNOUNCEMENT BAR
+══════════════════════════════════════════════ -->
+<div class="announcement-bar" id="announcementBar">
+  <div class="announcement-bar-inner">
+    <span class="ann-badge">🔥 Oferta</span>
+    <span class="ann-text">Envío gratis en compras mayores a $50.000 &nbsp;·&nbsp; Hasta 12 cuotas sin interés</span>
+    <a href="Productos/index.html" class="ann-link">Ver productos →</a>
+  </div>
+  <span class="ann-close" id="annClose" role="button" aria-label="Cerrar">✕</span>
+</div>
 
 <!-- ══════════════════════════════════════════════
      HEADER
 ══════════════════════════════════════════════ -->
 <header class="site-header" id="header">
+  <div class="header-accent-line"></div>
   <nav class="nav-container">
-    <a href="index.html" class="logo">iPlace</a>
+
+    <!-- Logo -->
+    <div class="logo-wrap">
+      <a href="index.html" class="logo">iPlace</a>
+    </div>
+
+    <!-- Nav links con mega menú -->
     <ul class="nav-links" id="navLinks">
-      <li><a href="index.html" class="active">Inicio</a></li>
-      <li><a href="Productos/index.html">Productos</a></li>
-      <li><a href="Contacto/index.html">Contacto</a></li>
+      <li class="nav-item">
+        <a href="index.html" class="active">Inicio</a>
+      </li>
+      <li class="nav-item">
+        <a href="Productos/index.html">
+          Productos <span class="nav-arrow">▾</span>
+        </a>
+        <!-- Mega menú -->
+        <div class="mega-menu">
+          <div class="mega-menu-grid">
+            <a href="Producto/index.html?id=1" class="mega-link">
+              <div class="mega-link-icon">📱</div>
+              <div>
+                <div class="mega-link-name">iPhone 16 Pro Max</div>
+                <div class="mega-link-desc">Desde $10 · Titanio A18 Pro</div>
+              </div>
+            </a>
+            <a href="Producto/index.html?id=6" class="mega-link">
+              <div class="mega-link-icon">💻</div>
+              <div>
+                <div class="mega-link-name">MacBook Air M3</div>
+                <div class="mega-link-desc">Desde $1.099 · Ultra delgado</div>
+              </div>
+            </a>
+            <a href="Producto/index.html?id=3" class="mega-link">
+              <div class="mega-link-icon">📟</div>
+              <div>
+                <div class="mega-link-name">iPad Pro M4</div>
+                <div class="mega-link-desc">Desde $1.099 · Chip M4</div>
+              </div>
+            </a>
+            <a href="Producto/index.html?id=4" class="mega-link">
+              <div class="mega-link-icon">⌚</div>
+              <div>
+                <div class="mega-link-name">Apple Watch Ultra 2</div>
+                <div class="mega-link-desc">Desde $799 · Titanio</div>
+              </div>
+            </a>
+            <a href="Producto/index.html?id=5" class="mega-link">
+              <div class="mega-link-icon">🎧</div>
+              <div>
+                <div class="mega-link-name">AirPods Pro 2</div>
+                <div class="mega-link-desc">Desde $249 · ANC</div>
+              </div>
+            </a>
+            <a href="Productos/index.html?categoria=Accesorios" class="mega-link">
+              <div class="mega-link-icon">🛍️</div>
+              <div>
+                <div class="mega-link-name">Accesorios</div>
+                <div class="mega-link-desc">Fundas, cargadores y más</div>
+              </div>
+            </a>
+          </div>
+          <div class="mega-footer">
+            <span style="font-size:.78rem;color:var(--text-muted)">🚚 Envío gratis en todos los productos</span>
+            <a href="Productos/index.html" class="mega-footer-link">Ver todo →</a>
+          </div>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a href="Contacto/index.html">Contacto</a>
+      </li>
     </ul>
+
+    <!-- Actions -->
     <div class="nav-actions">
+      <!-- Search -->
+      <button class="search-btn" id="searchBtn" aria-label="Buscar">🔍</button>
+
+      <!-- Cart -->
       <a href="Carrito/index.html" class="cart-btn" aria-label="Ver carrito">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
@@ -31,12 +116,47 @@
         Carrito
         <span class="cart-count hidden" id="cartCount">0</span>
       </a>
+
+      <!-- Hamburger -->
       <button class="hamburger" id="hamburger" aria-label="Menú" aria-expanded="false">
         <span></span><span></span><span></span>
       </button>
     </div>
+
   </nav>
 </header>
+
+<!-- ══════════════════════════════════════════════
+     SEARCH OVERLAY
+══════════════════════════════════════════════ -->
+<div class="search-overlay" id="searchOverlay" role="dialog" aria-label="Buscar productos">
+  <div class="search-box">
+    <div class="search-input-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" class="search-input" id="searchInput" placeholder="Buscar iPhone, iPad, Mac...">
+      <kbd class="search-esc">ESC</kbd>
+    </div>
+    <div class="search-suggestions">
+      <div class="search-suggestion-label">Búsquedas populares</div>
+      <div class="search-suggestion-item" onclick="window.location.href='Producto/index.html?id=1'">
+        <span class="search-suggestion-icon">📱</span>
+        <span class="search-suggestion-name">iPhone 16 Pro Max</span>
+      </div>
+      <div class="search-suggestion-item" onclick="window.location.href='Producto/index.html?id=6'">
+        <span class="search-suggestion-icon">💻</span>
+        <span class="search-suggestion-name">MacBook Air M3</span>
+      </div>
+      <div class="search-suggestion-item" onclick="window.location.href='Producto/index.html?id=3'">
+        <span class="search-suggestion-icon">📟</span>
+        <span class="search-suggestion-name">iPad Pro M4</span>
+      </div>
+      <div class="search-suggestion-item" onclick="window.location.href='Producto/index.html?id=5'">
+        <span class="search-suggestion-icon">🎧</span>
+        <span class="search-suggestion-name">AirPods Pro 2</span>
+      </div>
+    </div>
+  </div>
+</div>
 
 <main>
 
@@ -337,6 +457,41 @@
 <div class="notification" id="toastContainer" aria-live="polite"></div>
 
 <script type="module" src="js/main.js"></script>
+<script>
+  // ---- Announcement bar close ----
+  document.getElementById('annClose')?.addEventListener('click', () => {
+    const bar = document.getElementById('announcementBar');
+    bar.style.transition = 'max-height .4s ease, opacity .3s ease, padding .4s ease';
+    bar.style.overflow = 'hidden';
+    bar.style.opacity = '0';
+    bar.style.maxHeight = '0';
+    bar.style.padding = '0';
+    setTimeout(() => bar.remove(), 400);
+  });
+
+  // ---- Search overlay ----
+  const searchBtn = document.getElementById('searchBtn');
+  const searchOverlay = document.getElementById('searchOverlay');
+  const searchInput = document.getElementById('searchInput');
+
+  searchBtn?.addEventListener('click', () => {
+    searchOverlay.classList.add('open');
+    setTimeout(() => searchInput?.focus(), 200);
+  });
+  searchOverlay?.addEventListener('click', (e) => {
+    if (e.target === searchOverlay) searchOverlay.classList.remove('open');
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') searchOverlay?.classList.remove('open');
+  });
+
+  // ---- Search input — redirect on Enter ----
+  searchInput?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && searchInput.value.trim()) {
+      window.location.href = `Productos/index.html?q=${encodeURIComponent(searchInput.value.trim())}`;
+    }
+  });
+</script>
 <script type="module">
   // Counter animation for stats
   function animateCounter(el) {
