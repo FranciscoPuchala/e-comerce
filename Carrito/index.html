@@ -21,6 +21,7 @@
 </div>
 
 <header class="site-header" id="header">
+  <div class="header-top-line"></div>
   <div class="header-accent-line"></div>
   <div class="header-orb header-orb-1"></div>
   <div class="header-orb header-orb-2"></div>
@@ -198,6 +199,23 @@
     items.forEach(function(a){ a.addEventListener('mouseenter',function(){move(a);}); });
     nav.addEventListener('mouseleave',function(){ pill.style.opacity='0'; });
     nav.addEventListener('mouseenter',function(){ pill.style.opacity='1'; });
+  })();
+
+  // Cursor spotlight
+  (function(){
+    var h=document.getElementById('header');
+    if(!h) return;
+    var raf=null;
+    h.addEventListener('mouseenter',function(){h.classList.add('spotlight-active');});
+    h.addEventListener('mouseleave',function(){h.classList.remove('spotlight-active');});
+    h.addEventListener('mousemove',function(e){
+      if(raf) cancelAnimationFrame(raf);
+      raf=requestAnimationFrame(function(){
+        var r=h.getBoundingClientRect();
+        h.style.setProperty('--mx',(e.clientX-r.left)+'px');
+        h.style.setProperty('--my',(e.clientY-r.top)+'px');
+      });
+    });
   })();
 </script>
 </body>

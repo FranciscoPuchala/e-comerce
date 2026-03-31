@@ -28,6 +28,7 @@
      HEADER
 ══════════════════════════════════════════════ -->
 <header class="site-header" id="header">
+  <div class="header-top-line"></div>
   <div class="header-accent-line"></div>
   <div class="header-orb header-orb-1"></div>
   <div class="header-orb header-orb-2"></div>
@@ -50,53 +51,49 @@
         </a>
         <!-- Mega menú -->
         <div class="mega-menu">
-          <div class="mega-menu-grid">
-            <a href="Producto/index.html?id=1" class="mega-link">
-              <div class="mega-link-icon">📱</div>
-              <div>
-                <div class="mega-link-name">iPhone 16 Pro Max</div>
-                <div class="mega-link-desc">Desde $10 · Titanio A18 Pro</div>
+          <div class="mega-inner">
+            <!-- Featured product -->
+            <div class="mega-featured">
+              <span class="mega-featured-badge">Nuevo 2025</span>
+              <div class="mega-featured-icon">📱</div>
+              <div class="mega-featured-name">iPhone 16<br>Pro Max</div>
+              <div class="mega-featured-desc">Chip A18 Pro<br>Titanio · 48MP</div>
+              <a href="Producto/index.html?id=1" class="mega-featured-btn">Ver producto →</a>
+            </div>
+            <!-- Links grid -->
+            <div class="mega-links-col">
+              <div class="mega-label">Todos los productos</div>
+              <div class="mega-menu-grid">
+                <a href="Producto/index.html?id=6" class="mega-link">
+                  <div class="mega-link-icon">💻</div>
+                  <div><div class="mega-link-name">MacBook Air M3</div><div class="mega-link-desc">Ultra delgado · M3</div></div>
+                </a>
+                <a href="Producto/index.html?id=3" class="mega-link">
+                  <div class="mega-link-icon">📟</div>
+                  <div><div class="mega-link-name">iPad Pro M4</div><div class="mega-link-desc">Pantalla XDR · M4</div></div>
+                </a>
+                <a href="Producto/index.html?id=4" class="mega-link">
+                  <div class="mega-link-icon">⌚</div>
+                  <div><div class="mega-link-name">Apple Watch Ultra 2</div><div class="mega-link-desc">Titanio aeroespacial</div></div>
+                </a>
+                <a href="Producto/index.html?id=5" class="mega-link">
+                  <div class="mega-link-icon">🎧</div>
+                  <div><div class="mega-link-name">AirPods Pro 2</div><div class="mega-link-desc">ANC · Chip H2</div></div>
+                </a>
+                <a href="Producto/index.html?id=2" class="mega-link">
+                  <div class="mega-link-icon">📱</div>
+                  <div><div class="mega-link-name">iPhone 16</div><div class="mega-link-desc">Chip A18 · Dynamic Island</div></div>
+                </a>
+                <a href="Productos/index.html?categoria=Accesorios" class="mega-link">
+                  <div class="mega-link-icon">🛍️</div>
+                  <div><div class="mega-link-name">Accesorios</div><div class="mega-link-desc">Fundas y cargadores</div></div>
+                </a>
               </div>
-            </a>
-            <a href="Producto/index.html?id=6" class="mega-link">
-              <div class="mega-link-icon">💻</div>
-              <div>
-                <div class="mega-link-name">MacBook Air M3</div>
-                <div class="mega-link-desc">Desde $1.099 · Ultra delgado</div>
-              </div>
-            </a>
-            <a href="Producto/index.html?id=3" class="mega-link">
-              <div class="mega-link-icon">📟</div>
-              <div>
-                <div class="mega-link-name">iPad Pro M4</div>
-                <div class="mega-link-desc">Desde $1.099 · Chip M4</div>
-              </div>
-            </a>
-            <a href="Producto/index.html?id=4" class="mega-link">
-              <div class="mega-link-icon">⌚</div>
-              <div>
-                <div class="mega-link-name">Apple Watch Ultra 2</div>
-                <div class="mega-link-desc">Desde $799 · Titanio</div>
-              </div>
-            </a>
-            <a href="Producto/index.html?id=5" class="mega-link">
-              <div class="mega-link-icon">🎧</div>
-              <div>
-                <div class="mega-link-name">AirPods Pro 2</div>
-                <div class="mega-link-desc">Desde $249 · ANC</div>
-              </div>
-            </a>
-            <a href="Productos/index.html?categoria=Accesorios" class="mega-link">
-              <div class="mega-link-icon">🛍️</div>
-              <div>
-                <div class="mega-link-name">Accesorios</div>
-                <div class="mega-link-desc">Fundas, cargadores y más</div>
-              </div>
-            </a>
+            </div>
           </div>
           <div class="mega-footer">
-            <span style="font-size:.78rem;color:var(--text-muted)">🚚 Envío gratis en todos los productos</span>
-            <a href="Productos/index.html" class="mega-footer-link">Ver todo →</a>
+            <span>🚚 Envío gratis en todos los productos</span>
+            <a href="Productos/index.html" class="mega-footer-link">Ver todo el catálogo →</a>
           </div>
         </div>
       </li>
@@ -513,6 +510,23 @@
     });
     nav.addEventListener('mouseleave', () => { pill.style.opacity = '0'; });
     nav.addEventListener('mouseenter', () => { pill.style.opacity = '1'; });
+  })();
+
+  // ---- Cursor spotlight ----
+  (function() {
+    const header = document.getElementById('header');
+    if (!header) return;
+    let raf = null;
+    header.addEventListener('mouseenter', () => header.classList.add('spotlight-active'));
+    header.addEventListener('mouseleave', () => header.classList.remove('spotlight-active'));
+    header.addEventListener('mousemove', (e) => {
+      if (raf) cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        const r = header.getBoundingClientRect();
+        header.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+        header.style.setProperty('--my', (e.clientY - r.top) + 'px');
+      });
+    });
   })();
 </script>
 <script type="module">
