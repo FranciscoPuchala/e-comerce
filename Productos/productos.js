@@ -14,8 +14,7 @@ function getCategoryFromURL() {
 function buildCard(product) {
   const badge = product.badge ? `<span class="badge badge-new">${product.badge}</span>` : '';
   return `
-    <article class="product-card"
-      onclick="window.location.href='../Producto/index.html?id=${product.id}'"
+    <article class="product-card" data-id="${product.id}"
       role="button" tabindex="0" aria-label="Ver ${product.name}">
       <div class="product-img-wrap">
         <img src="${product.image}" alt="${product.name}" loading="lazy">
@@ -26,7 +25,7 @@ function buildCard(product) {
         <p class="product-desc">${product.description}</p>
         <div class="product-footer">
           <span class="product-price">${formatPrice(product.price)}</span>
-          <button class="add-to-cart-btn" data-id="${product.id}" onclick="event.stopPropagation()">
+          <button class="add-to-cart-btn" data-id="${product.id}">
             + Agregar
           </button>
         </div>
@@ -83,23 +82,31 @@ function initAddToCart() {
 
   grid.addEventListener('click', (e) => {
     const btn = e.target.closest('.add-to-cart-btn');
-    if (!btn) return;
-    e.stopPropagation();
 
-    const id = btn.dataset.id;
-    const product = PRODUCTS.find(p => p.id === id);
-    if (!product) return;
+    if (btn) {
+      // Add to cart — stop here, don't navigate
+      const id = btn.dataset.id;
+      const product = PRODUCTS.find(p => p.id === id);
+      if (!product) return;
 
-    Cart.add(product);
-    updateCartBadge();
-    showToast(`${product.name} agregado al carrito`, 'success');
+      Cart.add(product);
+      updateCartBadge();
+      showToast(`${product.name} agregado al carrito`, 'success');
 
-    btn.textContent = '✓';
-    btn.style.background = 'var(--success)';
-    setTimeout(() => { btn.textContent = '+ Agregar'; btn.style.background = ''; }, 1500);
+      btn.textContent = '✓';
+      btn.style.background = 'var(--success)';
+      setTimeout(() => { btn.textContent = '+ Agregar'; btn.style.background = ''; }, 1500);
 
-    document.getElementById('cartCount')?.classList.add('bump');
-    setTimeout(() => document.getElementById('cartCount')?.classList.remove('bump'), 400);
+      document.getElementById('cartCount')?.classList.add('bump');
+      setTimeout(() => document.getElementById('cartCount')?.classList.remove('bump'), 400);
+      return;
+    }
+
+    // Click on card body → navigate to product
+    const card = e.target.closest('.product-card');
+    if (card) {
+      window.location.href = `../Producto/index.html?id=${card.dataset.id}`;
+    }
   });
 }
 
