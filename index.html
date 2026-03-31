@@ -104,10 +104,7 @@
 
     <!-- Actions -->
     <div class="nav-actions">
-      <!-- Search -->
-      <button class="search-btn" id="searchBtn" aria-label="Buscar">🔍</button>
-
-      <!-- Cart -->
+<!-- Cart -->
       <a href="Carrito/index.html" class="cart-btn" aria-label="Ver carrito">
         <span class="cart-shimmer"></span>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -126,39 +123,6 @@
 
   </nav>
 </header>
-
-<!-- ══════════════════════════════════════════════
-     SEARCH OVERLAY
-══════════════════════════════════════════════ -->
-<div class="search-overlay" id="searchOverlay" role="dialog" aria-label="Buscar productos">
-  <div class="search-box">
-    <div class="search-input-wrap">
-      <span class="search-icon">🔍</span>
-      <input type="text" class="search-input" id="searchInput" placeholder="Buscar iPhone, iPad, Mac...">
-      <kbd class="search-esc">ESC</kbd>
-    </div>
-    <div class="search-suggestions">
-      <div class="search-suggestion-label">Búsquedas populares</div>
-      <div class="search-suggestion-item" onclick="window.location.href='Producto/index.html?id=1'">
-        <span class="search-suggestion-icon">📱</span>
-        <span class="search-suggestion-name">iPhone 16 Pro Max</span>
-      </div>
-      <div class="search-suggestion-item" onclick="window.location.href='Producto/index.html?id=6'">
-        <span class="search-suggestion-icon">💻</span>
-        <span class="search-suggestion-name">MacBook Air M3</span>
-      </div>
-      <div class="search-suggestion-item" onclick="window.location.href='Producto/index.html?id=3'">
-        <span class="search-suggestion-icon">📟</span>
-        <span class="search-suggestion-name">iPad Pro M4</span>
-      </div>
-      <div class="search-suggestion-item" onclick="window.location.href='Producto/index.html?id=5'">
-        <span class="search-suggestion-icon">🎧</span>
-        <span class="search-suggestion-name">AirPods Pro 2</span>
-      </div>
-    </div>
-  </div>
-</div>
-
 <main>
 
 <!-- ══════════════════════════════════════════════
@@ -468,29 +432,6 @@
     bar.style.maxHeight = '0';
     bar.style.padding = '0';
     setTimeout(() => bar.remove(), 400);
-  });
-
-  // ---- Search overlay ----
-  const searchBtn = document.getElementById('searchBtn');
-  const searchOverlay = document.getElementById('searchOverlay');
-  const searchInput = document.getElementById('searchInput');
-
-  searchBtn?.addEventListener('click', () => {
-    searchOverlay.classList.add('open');
-    setTimeout(() => searchInput?.focus(), 200);
-  });
-  searchOverlay?.addEventListener('click', (e) => {
-    if (e.target === searchOverlay) searchOverlay.classList.remove('open');
-  });
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') searchOverlay?.classList.remove('open');
-  });
-
-  // ---- Search input — redirect on Enter ----
-  searchInput?.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' && searchInput.value.trim()) {
-      window.location.href = `Productos/index.html?q=${encodeURIComponent(searchInput.value.trim())}`;
-    }
   });
 
   // ---- Sliding nav pill indicator ----
