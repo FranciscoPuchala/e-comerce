@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 // ---- Access Token ----
-$ACCESS_TOKEN = 'APP_USR-7634223680689579-032917-70c522dfd66ce90169590c50a72d7614-3302020268';
+$ACCESS_TOKEN = 'APP_USR-1059284618059671-032917-e5c98e4edfdb5bb3ae36726e14676066-459903372';
 
 // ---- Precio oficial del servidor (nunca confiar en el cliente) ----
 $PRICE_LIST = [
