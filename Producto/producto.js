@@ -17,6 +17,8 @@ function renderProduct(product) {
   document.getElementById('detailImg').src = product.image;
   document.getElementById('detailImg').alt = product.name;
   document.getElementById('detailCategory').textContent = product.category;
+  const bc = document.getElementById('breadcrumbProduct');
+  if (bc) bc.textContent = product.name;
   document.getElementById('detailName').textContent = product.name;
   document.getElementById('detailPrice').textContent = formatPrice(product.price);
   document.getElementById('detailDesc').textContent = product.description;
@@ -98,7 +100,7 @@ function initQtySelector(product) {
   document.getElementById('addToCartBtn').addEventListener('click', (e) => {
     Cart.add(product, qty);
     updateCartBadge();
-    showToast(`${product.name} agregado al carrito`, 'success');
+    showToast(`${product.name} agregado al carrito`, 'success', product.image);
 
     const btn = e.currentTarget;
     btn.textContent = '✓ Agregado';

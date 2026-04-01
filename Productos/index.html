@@ -5,6 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Productos — iPlace</title>
   <meta name="description" content="Explora toda la línea de productos Apple en iPlace.">
+  <meta property="og:title" content="Productos — iPlace">
+  <meta property="og:description" content="iPhone, iPad, Mac, Watch, AirPods y accesorios. Envío gratis.">
+  <meta property="og:image" content="https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=1200&q=80">
+  <meta property="og:type" content="website">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../css/main.css">
@@ -76,9 +81,34 @@
           <!-- Rendered by JS -->
         </div>
 
+        <!-- Sort + price filter bar -->
+        <div class="sort-bar">
+          <div class="price-filter">
+            <span class="price-filter-label">Precio:</span>
+            <button class="price-btn active" data-price="all">Todos</button>
+            <button class="price-btn" data-price="low">Hasta $100k</button>
+            <button class="price-btn" data-price="mid">$100k – $500k</button>
+            <button class="price-btn" data-price="high">Más de $500k</button>
+          </div>
+          <div class="sort-bar-right">
+            <span class="sort-label">Ordenar:</span>
+            <select class="sort-select" id="sortSelect" aria-label="Ordenar productos">
+              <option value="default">Destacados</option>
+              <option value="price-asc">Menor precio</option>
+              <option value="price-desc">Mayor precio</option>
+              <option value="name-asc">Nombre A–Z</option>
+            </select>
+          </div>
+        </div>
+
         <!-- Product grid -->
         <div class="product-grid" id="productGrid">
-          <div class="loading"><div class="spinner"></div></div>
+          <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line short"></div><div class="skeleton-line"></div><div class="skeleton-line price"></div></div></div>
+          <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line short"></div><div class="skeleton-line"></div><div class="skeleton-line price"></div></div></div>
+          <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line short"></div><div class="skeleton-line"></div><div class="skeleton-line price"></div></div></div>
+          <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line short"></div><div class="skeleton-line"></div><div class="skeleton-line price"></div></div></div>
+          <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line short"></div><div class="skeleton-line"></div><div class="skeleton-line price"></div></div></div>
+          <div class="skeleton-card"><div class="skeleton-img"></div><div class="skeleton-body"><div class="skeleton-line short"></div><div class="skeleton-line"></div><div class="skeleton-line price"></div></div></div>
         </div>
 
         <!-- No results -->

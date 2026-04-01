@@ -4,6 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Producto — iPlace</title>
+  <meta name="description" content="Detalles del producto en iPlace — tu distribuidor oficial Apple.">
+  <meta property="og:title" content="Producto — iPlace">
+  <meta property="og:description" content="Comprá productos Apple con garantía oficial, envío gratis y cuotas sin interés.">
+  <meta property="og:image" content="https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=1200&q=80">
+  <meta property="og:type" content="product">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../css/main.css">
@@ -63,9 +69,13 @@
       <section class="section" style="padding-top: 40px; padding-bottom: 80px;">
         <div class="container">
 
-          <a href="../Productos/index.html" class="back-link" id="backLink">
-            ← Volver a productos
-          </a>
+          <nav class="breadcrumb" aria-label="Navegación">
+            <a href="../index.html">Inicio</a>
+            <span class="breadcrumb-sep">›</span>
+            <a href="../Productos/index.html">Productos</a>
+            <span class="breadcrumb-sep">›</span>
+            <span class="bc-current" id="breadcrumbProduct">Producto</span>
+          </nav>
 
           <div class="product-detail">
             <!-- Imagen -->

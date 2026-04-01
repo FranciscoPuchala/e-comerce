@@ -112,15 +112,22 @@ export function formatPrice(amount) {
   }).format(amount);
 }
 
-/** Show a toast notification */
-export function showToast(message, type = 'default') {
+/** Show a toast notification
+ * @param {string} message
+ * @param {'default'|'success'|'error'} type
+ * @param {string} [imgUrl] optional product image
+ */
+export function showToast(message, type = 'default', imgUrl = null) {
   const container = document.getElementById('toastContainer');
   if (!container) return;
 
   const toast = document.createElement('div');
   toast.className = `toast${type !== 'default' ? ' ' + type : ''}`;
   const icons = { success: '✓', error: '✕', default: 'ℹ' };
-  toast.innerHTML = `<span class="toast-icon">${icons[type] ?? 'ℹ'}</span> ${message}`;
+  const imgHtml = imgUrl
+    ? `<img class="toast-img" src="${imgUrl}" alt="" loading="lazy">`
+    : `<span class="toast-icon">${icons[type] ?? 'ℹ'}</span>`;
+  toast.innerHTML = `${imgHtml}<span>${message}</span>`;
   container.appendChild(toast);
 
   requestAnimationFrame(() => {
@@ -158,6 +165,17 @@ export function initHeader() {
       }
     });
   }
+
+  // Back to top button
+  const btn = document.createElement('button');
+  btn.className = 'back-to-top';
+  btn.setAttribute('aria-label', 'Volver arriba');
+  btn.innerHTML = '↑';
+  document.body.appendChild(btn);
+  window.addEventListener('scroll', () => {
+    btn.classList.toggle('visible', window.scrollY > 300);
+  }, { passive: true });
+  btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 }
 
 // Keep badge in sync with cart changes from other tabs

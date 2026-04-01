@@ -4,6 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Carrito — iPlace</title>
+  <meta name="description" content="Tu carrito de compras en iPlace.">
+  <meta property="og:title" content="Carrito — iPlace">
+  <meta property="og:type" content="website">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../css/main.css">
@@ -70,6 +74,14 @@
     <section class="section">
       <div class="container">
 
+        <nav class="breadcrumb" aria-label="Navegación">
+          <a href="../index.html">Inicio</a>
+          <span class="breadcrumb-sep">›</span>
+          <a href="../Productos/index.html">Productos</a>
+          <span class="breadcrumb-sep">›</span>
+          <span class="bc-current">Carrito</span>
+        </nav>
+
         <!-- Empty state -->
         <div class="cart-empty" id="cartEmpty" style="display:none">
           <div class="icon">🛒</div>
@@ -129,10 +141,11 @@
               Finalizar compra →
             </a>
 
-            <div style="display:flex;gap:12px;justify-content:center;margin-top:16px;font-size:0.8rem;color:var(--text-muted)">
-              <span>🔒 Pago seguro</span>
-              <span>·</span>
-              <span>✓ Garantía oficial</span>
+            <div class="security-strip">
+              <div class="security-strip-item">🔒 Pago 100% seguro</div>
+              <div class="security-strip-item">✓ Garantía oficial Apple</div>
+              <div class="security-strip-item">🔄 30 días devolución</div>
+              <div class="security-strip-item">🚚 Envío gratis</div>
             </div>
           </aside>
         </div>
