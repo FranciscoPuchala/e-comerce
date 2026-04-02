@@ -76,11 +76,22 @@
 
   <script type="module">
     import { Cart } from '../js/cart-utils.js';
+    import { db } from '../js/firebase-config.js';
+    import { doc, updateDoc } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
     Cart.clear();
 
-    // Generate order number from timestamp
+    // Generate order number for display
     const orderNum = 'IPL-' + Date.now().toString(36).toUpperCase().slice(-8);
     document.getElementById('orderNum').textContent = orderNum;
+
+    // Mark the order as paid in Firestore
+    const pendingOrderId = localStorage.getItem('iplace_pending_order');
+    if (pendingOrderId) {
+      updateDoc(doc(db, 'orders', pendingOrderId), { status: 'paid' })
+        .catch(err => console.error('Error updating order status:', err));
+      localStorage.removeItem('iplace_pending_order');
+    }
   </script>
 </body>
 </html>

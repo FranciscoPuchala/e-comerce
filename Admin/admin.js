@@ -119,11 +119,15 @@ function shortId(id) {
 // ============================================================
 const STATUS_LABELS = {
   pending:    'Pendiente',
+  paid:       'Pagado',
   processing: 'En proceso',
   shipped:    'Enviado',
   delivered:  'Entregado',
   cancelled:  'Cancelado',
 };
+
+// Statuses that count as real confirmed revenue
+const PAID_STATUSES = new Set(['paid', 'processing', 'shipped', 'delivered']);
 
 function statusBadge(s) {
   const label = STATUS_LABELS[s] ?? s;
@@ -170,7 +174,9 @@ function updateBadgePending() {
 
 function renderOrderStats() {
   const total    = allOrders.length;
-  const revenue  = allOrders.reduce((s, o) => s + (o.total ?? 0), 0);
+  const revenue  = allOrders
+    .filter(o => PAID_STATUSES.has(o.status))
+    .reduce((s, o) => s + (o.total ?? 0), 0);
   const pending  = allOrders.filter(o => o.status === 'pending').length;
   const today    = allOrders.filter(o => {
     if (!o.createdAt) return false;

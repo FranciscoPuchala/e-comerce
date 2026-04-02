@@ -215,6 +215,8 @@ async function handlePay() {
       // MercadoPago flow (Bluehost producción)
       payStatus.textContent = 'Redirigiendo a MercadoPago...';
       const { init_point } = await createMercadoPagoPreference(orderId, formData);
+      // Guardar orderId para marcarlo como pagado al volver de MP
+      localStorage.setItem('iplace_pending_order', orderId);
       Cart.clear();
       window.location.href = init_point;
     }

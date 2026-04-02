@@ -654,6 +654,7 @@ tr:hover td { background: rgba(0,0,0,.015); }
 .badge::before { content: '●'; font-size: .45rem; }
 
 .badge-pending   { background: rgba(255,149,0,.12); color: #a05900; }
+.badge-paid      { background: rgba(52,199,89,.12); color: #1a7a35; }
 .badge-processing{ background: rgba(0,113,227,.12); color: #0056b3; }
 .badge-shipped   { background: rgba(94,92,230,.12); color: #3634a3; }
 .badge-delivered { background: rgba(52,199,89,.12); color: #1a7a35; }
