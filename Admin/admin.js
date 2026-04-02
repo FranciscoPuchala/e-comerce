@@ -2,7 +2,12 @@
 //  iPlace Admin Panel — Logic
 // ============================================================
 
-import { auth, db } from '../js/firebase-config.js';
+import { auth, db, storage } from '../js/firebase-config.js';
+import {
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+} from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js';
 import { PRODUCTS } from '../js/products-data.js';
 import {
   onAuthStateChanged,
@@ -564,6 +569,12 @@ async function initProducts() {
     preview.style.display = e.target.value ? '' : 'none';
   });
 
+  // Image source tabs (URL vs file upload)
+  document.getElementById('imgTabUrl').addEventListener('click', () => switchImgTab('url'));
+  document.getElementById('imgTabFile').addEventListener('click', () => switchImgTab('file'));
+
+  document.getElementById('pfImageFile').addEventListener('change', handleImageUpload);
+
   document.getElementById('addFeatureBtn').addEventListener('click', addFeatureRow);
 
   document.getElementById('productForm').addEventListener('submit', saveProduct);
@@ -650,6 +661,61 @@ function renderProductsTable() {
   });
 }
 
+// ---- Image source tab switching ----
+let activeImgTab = 'url';
+
+function switchImgTab(tab) {
+  activeImgTab = tab;
+  document.getElementById('imgTabUrl').classList.toggle('active', tab === 'url');
+  document.getElementById('imgTabFile').classList.toggle('active', tab === 'file');
+  document.getElementById('imgPanelUrl').style.display  = tab === 'url'  ? '' : 'none';
+  document.getElementById('imgPanelFile').style.display = tab === 'file' ? '' : 'none';
+}
+
+function handleImageUpload(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  // Show local preview immediately
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const preview = document.getElementById('pfImagePreview');
+    preview.src = ev.target.result;
+    preview.style.display = '';
+  };
+  reader.readAsDataURL(file);
+
+  // Upload to Firebase Storage
+  const path = `products/${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`;
+  const storageRef = ref(storage, path);
+  const task = uploadBytesResumable(storageRef, file);
+
+  const progressWrap = document.getElementById('uploadProgress');
+  const bar = document.getElementById('uploadBar');
+  const label = document.getElementById('uploadLabel');
+  progressWrap.style.display = '';
+
+  task.on('state_changed',
+    snap => {
+      const pct = Math.round((snap.bytesTransferred / snap.totalBytes) * 100);
+      bar.style.width = pct + '%';
+      label.textContent = `Subiendo... ${pct}%`;
+    },
+    err => {
+      label.textContent = 'Error al subir la imagen.';
+      console.error(err);
+      toast('Error al subir la imagen', false);
+    },
+    async () => {
+      const url = await getDownloadURL(task.snapshot.ref);
+      document.getElementById('pfImage').value = url;
+      bar.style.width = '100%';
+      label.textContent = 'Imagen subida correctamente';
+      setTimeout(() => { progressWrap.style.display = 'none'; }, 1500);
+    }
+  );
+}
+
 // ---- Product Modal ----
 function openProductModal(product) {
   editingProduct = product;
@@ -678,6 +744,11 @@ function openProductModal(product) {
   const editor = document.getElementById('featuresEditor');
   editor.innerHTML = '';
   (product?.features ?? []).forEach(f => addFeatureRow(f));
+
+  // Reset image tab to URL mode
+  switchImgTab('url');
+  document.getElementById('pfImageFile').value = '';
+  document.getElementById('uploadProgress').style.display = 'none';
 
   document.getElementById('productModal').classList.add('open');
   document.getElementById('pfName').focus();
@@ -724,8 +795,14 @@ async function saveProduct(e) {
   const desc     = document.getElementById('pfDesc').value.trim();
   const image    = document.getElementById('pfImage').value.trim();
 
-  if (!name || !category || isNaN(price) || !desc || !image) {
+  if (!name || !category || isNaN(price) || !desc) {
     errEl.textContent = 'Completá todos los campos obligatorios (*)';
+    return;
+  }
+  if (!image) {
+    errEl.textContent = activeImgTab === 'file'
+      ? 'Esperá a que termine de subir la imagen.'
+      : 'Ingresá una URL de imagen.';
     return;
   }
 

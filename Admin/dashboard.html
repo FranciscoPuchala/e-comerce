@@ -399,8 +399,23 @@
           <textarea class="pf-input" id="pfDesc" rows="3" placeholder="Descripción del producto..." required></textarea>
         </div>
         <div class="pf-group" style="grid-column:1/-1">
-          <label class="pf-label">URL de imagen *</label>
-          <input type="url" class="pf-input" id="pfImage" placeholder="https://..." required>
+          <label class="pf-label">Imagen *</label>
+          <div style="display:flex;gap:8px;margin-bottom:8px">
+            <button type="button" class="img-tab-btn active" id="imgTabUrl">URL</button>
+            <button type="button" class="img-tab-btn" id="imgTabFile">Subir archivo</button>
+          </div>
+          <div id="imgPanelUrl">
+            <input type="url" class="pf-input" id="pfImage" placeholder="https://...">
+          </div>
+          <div id="imgPanelFile" style="display:none">
+            <input type="file" class="pf-input" id="pfImageFile" accept="image/*" style="padding:6px">
+            <div id="uploadProgress" style="display:none;margin-top:6px">
+              <div style="background:var(--border);border-radius:99px;height:4px;overflow:hidden">
+                <div id="uploadBar" style="height:100%;background:var(--accent);width:0%;transition:width .3s"></div>
+              </div>
+              <span id="uploadLabel" style="font-size:.75rem;color:var(--text-muted);margin-top:4px;display:block">Subiendo...</span>
+            </div>
+          </div>
           <img id="pfImagePreview" src="" alt="" style="display:none;width:80px;height:80px;object-fit:cover;border-radius:8px;margin-top:8px;border:1px solid var(--border)">
         </div>
         <div class="pf-group">
