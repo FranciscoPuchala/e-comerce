@@ -220,7 +220,7 @@
       <div class="stat-card sfx-scale">
         <div class="stat-icon">🛡️</div>
         <div class="stat-number" data-count="5">0</div>
-        <div class="stat-label">Años de garantía Apple</div>
+        <div class="stat-label">Años en el mercado</div>
       </div>
     </div>
   </div>
@@ -405,17 +405,15 @@
     <div class="footer-col">
       <h5>Soporte</h5>
       <a href="Contacto/index.html">Contacto</a>
-      <a href="#">Centro de ayuda</a>
-      <a href="#">Seguimiento de pedidos</a>
-      <a href="#">Devoluciones</a>
-      <a href="#">Garantía</a>
+      <a href="legal.html#devoluciones">Devoluciones</a>
+      <a href="legal.html#garantia">Garantía</a>
     </div>
     <div class="footer-col">
       <h5>Legal</h5>
-      <a href="#">Política de privacidad</a>
-      <a href="#">Términos y condiciones</a>
-      <a href="#">Política de cookies</a>
-      <a href="#">Defensa del consumidor</a>
+      <a href="legal.html#privacidad">Política de privacidad</a>
+      <a href="legal.html#terminos">Términos y condiciones</a>
+      <a href="legal.html#devoluciones">Política de devoluciones</a>
+      <a href="legal.html#defensa">Defensa del consumidor</a>
     </div>
   </div>
   <div class="footer-divider"></div>
@@ -502,13 +500,34 @@
   }, { threshold: 0.5 });
   document.querySelectorAll('[data-count]').forEach(el => counterObserver.observe(el));
 
-  // Newsletter
-  document.getElementById('newsletterBtn')?.addEventListener('click', () => {
-    const email = document.getElementById('newsletterEmail').value.trim();
-    if (!email || !/\S+@\S+\.\S+/.test(email)) return;
-    document.getElementById('newsletterBtn').textContent = '✓ Suscripto';
-    document.getElementById('newsletterBtn').style.background = 'var(--success)';
-    document.getElementById('newsletterEmail').value = '';
+  // Newsletter — save to Firestore
+  import('./js/firebase-config.js').then(({ db }) => {
+    return import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js').then(({ collection, addDoc, serverTimestamp }) => {
+      document.getElementById('newsletterBtn')?.addEventListener('click', async () => {
+        const input = document.getElementById('newsletterEmail');
+        const btn   = document.getElementById('newsletterBtn');
+        const email = input.value.trim();
+        if (!email || !/\S+@\S+\.\S+/.test(email)) {
+          input.style.borderColor = 'var(--error)';
+          setTimeout(() => input.style.borderColor = '', 1500);
+          return;
+        }
+        btn.disabled = true;
+        btn.textContent = 'Suscribiendo...';
+        try {
+          await addDoc(collection(db, 'newsletter'), {
+            email,
+            createdAt: serverTimestamp(),
+          });
+          btn.textContent = '✓ Suscripto';
+          btn.style.background = 'var(--success)';
+          input.value = '';
+        } catch {
+          btn.textContent = 'Suscribirme';
+          btn.disabled = false;
+        }
+      });
+    });
   });
 </script>
 </body>

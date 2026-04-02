@@ -199,18 +199,10 @@ async function handlePay() {
     if (paymentMethod === 'transfer') {
       handleBankTransfer(orderId);
     } else if (!PAYMENT_ENDPOINT) {
-      // Modo demo (GitHub Pages) — sin backend real
-      showToast('Pedido registrado. Pago simulado en modo demo.', 'success');
-      payStatus.innerHTML = `
-        <strong>✅ Pedido #${orderId.slice(-8).toUpperCase()} registrado</strong><br>
-        <span style="color:var(--text-muted)">
-          Este es un sitio demo. En producción se redirigirá a MercadoPago para completar el pago.
-        </span><br><br>
-        <a href="../index.html" class="btn btn-ghost btn-sm">Volver al inicio</a>
-      `;
+      // GitHub Pages — redirigir a success igual para mostrar confirmación
+      localStorage.setItem('iplace_pending_order', orderId);
       Cart.clear();
-      updateCartBadge();
-      payBtn.style.display = 'none';
+      window.location.href = 'success.html';
     } else {
       // MercadoPago flow (Bluehost producción)
       payStatus.textContent = 'Redirigiendo a MercadoPago...';

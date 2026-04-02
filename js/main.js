@@ -59,7 +59,7 @@ function initAddToCart() {
 
       Cart.add({ id, name, price, image, category });
       updateCartBadge();
-      showToast(`${name} agregado al carrito`, 'success');
+      showToast(`${name} agregado al carrito`, 'success', image);
 
       btn.textContent = '✓';
       btn.style.background = 'var(--success)';

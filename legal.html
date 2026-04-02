@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Legal — iPlace</title>
+  <meta name="description" content="Política de privacidad, términos y condiciones de iPlace.">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/header.css">
+  <style>
+    .legal-layout { max-width: 760px; margin: 0 auto; padding: 60px 24px 80px; }
+    .legal-nav { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 48px; }
+    .legal-nav a { padding: 7px 16px; border-radius: 20px; background: var(--bg-alt); color: var(--text-muted); text-decoration: none; font-size: .84rem; font-weight: 500; transition: all .18s; border: 1.5px solid var(--border); }
+    .legal-nav a:hover, .legal-nav a.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .legal-section { display: none; }
+    .legal-section.active { display: block; }
+    .legal-section h1 { font-size: 1.75rem; font-weight: 700; margin-bottom: 8px; }
+    .legal-section .updated { font-size: .8rem; color: var(--text-muted); margin-bottom: 36px; }
+    .legal-section h2 { font-size: 1.05rem; font-weight: 700; margin: 28px 0 10px; }
+    .legal-section p, .legal-section li { font-size: .9rem; color: var(--text-muted); line-height: 1.75; }
+    .legal-section ul { padding-left: 20px; margin: 8px 0; }
+    .legal-section li { margin-bottom: 6px; }
+  </style>
+</head>
+<body>
+
+<header class="site-header" id="header">
+  <div class="header-top-line"></div>
+  <div class="header-accent-line"></div>
+  <nav class="nav-container">
+    <div class="logo-wrap"><a href="index.html" class="logo">iPlace</a></div>
+    <ul class="nav-links" id="navLinks">
+      <div class="nav-pill" id="navPill"></div>
+      <li class="nav-item"><a href="index.html">Inicio</a></li>
+      <li class="nav-item"><a href="Productos/index.html">Productos</a></li>
+      <li class="nav-item"><a href="Contacto/index.html">Contacto</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="Carrito/index.html" class="cart-btn" aria-label="Ver carrito">
+        <span class="cart-shimmer"></span>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        Carrito <span class="cart-count hidden" id="cartCount">0</span>
+      </a>
+      <button class="hamburger" id="hamburger" aria-label="Menú" aria-expanded="false"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+</header>
+
+<main>
+  <div class="legal-layout">
+
+    <nav class="legal-nav" id="legalNav">
+      <a href="#privacidad" class="active">Política de privacidad</a>
+      <a href="#terminos">Términos y condiciones</a>
+      <a href="#devoluciones">Devoluciones</a>
+      <a href="#garantia">Garantía</a>
+      <a href="#defensa">Defensa del consumidor</a>
+    </nav>
+
+    <!-- ── Privacidad ── -->
+    <div class="legal-section active" id="privacidad">
+      <h1>Política de privacidad</h1>
+      <p class="updated">Última actualización: enero 2025</p>
+
+      <h2>1. Información que recopilamos</h2>
+      <p>Recopilamos la información que nos proporcionás al realizar una compra o al completar el formulario de contacto: nombre, apellido, email, teléfono y dirección de entrega. No almacenamos datos de tarjetas de crédito — los pagos son procesados directamente por MercadoPago.</p>
+
+      <h2>2. Uso de la información</h2>
+      <ul>
+        <li>Procesar y gestionar tus pedidos</li>
+        <li>Enviarte confirmaciones y actualizaciones sobre tu compra</li>
+        <li>Responder tus consultas de soporte</li>
+        <li>Mejorar nuestros servicios</li>
+      </ul>
+
+      <h2>3. Compartición de datos</h2>
+      <p>No vendemos ni compartimos tu información personal con terceros, salvo lo necesario para procesar pagos (MercadoPago) y realizar envíos. Todos los proveedores están obligados a proteger tu información.</p>
+
+      <h2>4. Seguridad</h2>
+      <p>Utilizamos Firebase (Google) para el almacenamiento seguro de datos y MercadoPago para el procesamiento de pagos con encriptación SSL. Tus datos están protegidos con estándares de seguridad de nivel bancario.</p>
+
+      <h2>5. Tus derechos</h2>
+      <p>Podés solicitar la eliminación, rectificación o acceso a tus datos personales en cualquier momento escribiéndonos a través del formulario de contacto.</p>
+    </div>
+
+    <!-- ── Términos ── -->
+    <div class="legal-section" id="terminos">
+      <h1>Términos y condiciones</h1>
+      <p class="updated">Última actualización: enero 2025</p>
+
+      <h2>1. Aceptación</h2>
+      <p>Al utilizar este sitio web y realizar compras, aceptás estos términos y condiciones en su totalidad.</p>
+
+      <h2>2. Productos y precios</h2>
+      <p>Todos los precios se muestran en pesos argentinos (ARS) e incluyen IVA. iPlace se reserva el derecho de modificar precios sin previo aviso. Los precios vigentes son los que se muestran al momento de completar la compra.</p>
+
+      <h2>3. Proceso de compra</h2>
+      <ul>
+        <li>Los pedidos se confirman una vez acreditado el pago</li>
+        <li>Recibirás un email de confirmación con el detalle de tu pedido</li>
+        <li>El tiempo de preparación es de 24 hs hábiles</li>
+        <li>El envío demora entre 24 y 72 hs hábiles según destino</li>
+      </ul>
+
+      <h2>4. Disponibilidad de stock</h2>
+      <p>En caso de que un producto no esté disponible luego de realizado el pago, te contactaremos para ofrecerte una alternativa o proceder con el reembolso total.</p>
+
+      <h2>5. Responsabilidad</h2>
+      <p>iPlace no se hace responsable por demoras causadas por factores externos como huelgas, desastres naturales o problemas con empresas de correo. En todos los casos haremos el mejor esfuerzo para resolver la situación.</p>
+    </div>
+
+    <!-- ── Devoluciones ── -->
+    <div class="legal-section" id="devoluciones">
+      <h1>Política de devoluciones</h1>
+      <p class="updated">Última actualización: enero 2025</p>
+
+      <h2>Plazo para devoluciones</h2>
+      <p>Tenés <strong>30 días corridos</strong> desde la recepción del producto para solicitar una devolución o cambio, sin necesidad de dar explicaciones.</p>
+
+      <h2>Condiciones</h2>
+      <ul>
+        <li>El producto debe estar en su estado original, sin uso y en su empaque original</li>
+        <li>Debe incluir todos los accesorios, manuales y documentación original</li>
+        <li>No aplica para productos que hayan sido activados o configurados</li>
+        <li>No aplica para productos con daños físicos causados por el usuario</li>
+      </ul>
+
+      <h2>Proceso de devolución</h2>
+      <ul>
+        <li>Contactanos por email o WhatsApp con tu número de pedido</li>
+        <li>Te enviamos una etiqueta de envío prepagada sin costo</li>
+        <li>Una vez recibido el producto, procesamos el reembolso en 3 a 5 días hábiles</li>
+        <li>El reembolso se acredita por el mismo medio de pago utilizado</li>
+      </ul>
+
+      <h2>Productos defectuosos</h2>
+      <p>Si recibiste un producto con defectos de fábrica, lo reemplazamos sin costo adicional. Esto no afecta ni reemplaza la garantía oficial de Apple.</p>
+    </div>
+
+    <!-- ── Garantía ── -->
+    <div class="legal-section" id="garantia">
+      <h1>Garantía</h1>
+      <p class="updated">Última actualización: enero 2025</p>
+
+      <h2>Garantía oficial Apple</h2>
+      <p>Todos los productos vendidos en iPlace incluyen <strong>1 año de garantía oficial Apple</strong> contra defectos de fabricación, contado desde la fecha de compra.</p>
+
+      <h2>¿Qué cubre?</h2>
+      <ul>
+        <li>Defectos de fabricación en hardware</li>
+        <li>Fallas en componentes internos sin causa externa</li>
+        <li>Problemas de batería dentro de los parámetros normales</li>
+      </ul>
+
+      <h2>¿Qué no cubre?</h2>
+      <ul>
+        <li>Daños físicos por caídas o golpes</li>
+        <li>Daños por líquidos (salvo modelos con certificación IP)</li>
+        <li>Daños causados por modificaciones no autorizadas</li>
+        <li>Desgaste normal del producto</li>
+      </ul>
+
+      <h2>Cómo hacer válida la garantía</h2>
+      <p>Contactanos con tu comprobante de compra. Te asistimos para coordinar el servicio técnico autorizado Apple más cercano o el envío del producto.</p>
+    </div>
+
+    <!-- ── Defensa ── -->
+    <div class="legal-section" id="defensa">
+      <h1>Defensa del consumidor</h1>
+      <p class="updated">Última actualización: enero 2025</p>
+
+      <p>En iPlace respetamos y cumplimos con la <strong>Ley 24.240 de Defensa del Consumidor</strong> de la República Argentina.</p>
+
+      <h2>Tus derechos como consumidor</h2>
+      <ul>
+        <li><strong>Derecho a la información:</strong> Precio final, características y condiciones claramente informadas</li>
+        <li><strong>Derecho de arrepentimiento:</strong> Podés cancelar tu compra dentro de los 10 días hábiles sin costo</li>
+        <li><strong>Garantía legal:</strong> 6 meses de garantía legal mínima sobre productos nuevos</li>
+        <li><strong>Trato digno:</strong> Atención respetuosa y sin discriminación</li>
+      </ul>
+
+      <h2>Botón de arrepentimiento</h2>
+      <p>Si querés ejercer tu derecho de arrepentimiento dentro de los 10 días hábiles de recibido el producto, contactanos por email indicando tu número de pedido. No te cobraremos ningún costo de envío.</p>
+
+      <h2>Organismos de defensa</h2>
+      <p>Si considerás que tus derechos no fueron respetados, podés realizar una denuncia ante la <strong>Dirección Nacional de Defensa del Consumidor</strong> en <a href="https://www.argentina.gob.ar/produccion/defensadelconsumidor" style="color:var(--accent)" target="_blank" rel="noopener">argentina.gob.ar</a> o llamar al <strong>0800-666-1518</strong>.</p>
+    </div>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="logo">iPlace</div>
+      <p>Tu distribuidor oficial Apple.</p>
+    </div>
+    <div class="footer-col">
+      <h5>Tienda</h5>
+      <a href="Productos/index.html">Todos los productos</a>
+    </div>
+    <div class="footer-col">
+      <h5>Soporte</h5>
+      <a href="Contacto/index.html">Contacto</a>
+    </div>
+    <div class="footer-col">
+      <h5>Legal</h5>
+      <a href="legal.html#privacidad">Privacidad</a>
+      <a href="legal.html#terminos">Términos</a>
+      <a href="legal.html#devoluciones">Devoluciones</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 iPlace. Todos los derechos reservados.</span>
+  </div>
+</footer>
+
+<div class="notification" id="toastContainer" aria-live="polite"></div>
+
+<script type="module" src="js/cart-utils.js">/* updateCartBadge + initHeader */</script>
+<script type="module">
+  import { updateCartBadge, initHeader } from './js/cart-utils.js';
+  initHeader();
+  updateCartBadge();
+</script>
+<script>
+  // Tab switching
+  const sections = { privacidad: null, terminos: null, devoluciones: null, garantia: null, defensa: null };
+  Object.keys(sections).forEach(id => { sections[id] = document.getElementById(id); });
+
+  document.getElementById('legalNav').addEventListener('click', (e) => {
+    const a = e.target.closest('a[href^="#"]');
+    if (!a) return;
+    e.preventDefault();
+    const hash = a.getAttribute('href').slice(1);
+
+    document.querySelectorAll('.legal-section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.legal-nav a').forEach(l => l.classList.remove('active'));
+    document.getElementById(hash)?.classList.add('active');
+    a.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  // Handle direct #hash in URL
+  const hash = window.location.hash.slice(1);
+  if (hash && document.getElementById(hash)) {
+    document.querySelectorAll('.legal-section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.legal-nav a').forEach(l => l.classList.remove('active'));
+    document.getElementById(hash).classList.add('active');
+    document.querySelector(`.legal-nav a[href="#${hash}"]`)?.classList.add('active');
+  }
+
+  // Nav pill
+  (function(){
+    var nav=document.getElementById('navLinks'), pill=document.getElementById('navPill');
+    if(!nav||!pill) return;
+    nav.querySelectorAll('.nav-item > a').forEach(a=>{
+      a.addEventListener('mouseenter',()=>{
+        var nr=nav.getBoundingClientRect(),lr=a.getBoundingClientRect();
+        pill.style.left=(lr.left-nr.left)+'px'; pill.style.width=lr.width+'px';
+      });
+    });
+    nav.addEventListener('mouseleave',()=>pill.style.opacity='0');
+    nav.addEventListener('mouseenter',()=>pill.style.opacity='1');
+  })();
+</script>
+</body>
+</html>

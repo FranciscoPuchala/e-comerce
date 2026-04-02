@@ -88,7 +88,7 @@ function initPromo() {
       btn.disabled = true;
       updateSummary();
     } else {
-      feedback.textContent = 'Código no válido. Probá con IPLACE10, BIENVENIDO o PREMIUM20.';
+      feedback.textContent = 'Código no válido. Verificá que esté bien escrito.';
       feedback.classList.add('error');
     }
   });

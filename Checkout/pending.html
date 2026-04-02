@@ -4,24 +4,75 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pago pendiente — iPlace</title>
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../css/main.css">
 </head>
 <body>
-  <header class="site-header">
+  <header class="site-header" style="position:relative;background:rgba(7,7,16,.92);backdrop-filter:blur(24px)">
     <nav class="nav-container">
       <a href="../index.html" class="logo">iPlace</a>
     </nav>
   </header>
-  <main class="status-page">
-    <div>
-      <div class="status-icon">⏳</div>
-      <h2>Pago en proceso</h2>
-      <p>Tu pago está siendo procesado. Te notificaremos por email cuando se confirme. Esto puede tardar hasta 2 días hábiles.</p>
-      <a href="../index.html" class="btn btn-primary">Volver al inicio</a>
+
+  <main class="success-page">
+    <div class="success-card">
+
+      <div class="success-checkmark" style="background:linear-gradient(135deg,#ff9500,#ffb340);box-shadow:0 8px 24px rgba(255,149,0,.35);animation:none">⏳</div>
+
+      <h1 class="success-title">Pago en proceso</h1>
+      <p class="success-subtitle">
+        Tu pago está siendo verificado.<br>
+        Te notificaremos por email cuando se confirme.
+      </p>
+
+      <div class="order-num-box">
+        Esto puede tardar hasta <strong>2 días hábiles</strong> dependiendo del método de pago utilizado.
+      </div>
+
+      <div class="next-steps">
+        <div class="next-steps-title">¿Qué pasa ahora?</div>
+
+        <div class="next-step-item">
+          <div class="next-step-num">1</div>
+          <div class="next-step-text">
+            <strong>Verificación del pago</strong>
+            MercadoPago está procesando tu transacción. Este paso puede tardar unos minutos.
+          </div>
+        </div>
+
+        <div class="next-step-item">
+          <div class="next-step-num">2</div>
+          <div class="next-step-text">
+            <strong>Confirmación por email</strong>
+            Recibirás un email con la confirmación de tu pedido ni bien se acredite el pago.
+          </div>
+        </div>
+
+        <div class="next-step-item">
+          <div class="next-step-num">3</div>
+          <div class="next-step-text">
+            <strong>Preparación y envío</strong>
+            Una vez confirmado el pago, preparamos y despachamos tu pedido en 24 hs.
+          </div>
+        </div>
+      </div>
+
+      <div class="success-actions">
+        <a href="../index.html" class="btn btn-primary">Volver al inicio</a>
+        <a href="../Contacto/index.html" class="btn btn-ghost">Consultar estado</a>
+      </div>
+
+      <div class="success-trust">
+        <span>🔒 Transacción segura</span>
+        <span>✉️ Te avisamos por email</span>
+        <span>💬 Soporte disponible</span>
+      </div>
+
     </div>
   </main>
+
   <script type="module">
     import { Cart } from '../js/cart-utils.js';
     Cart.clear();
