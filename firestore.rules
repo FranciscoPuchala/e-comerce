@@ -3,23 +3,25 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Orders: cualquiera puede crear, nadie puede leer/editar desde el cliente.
+    // Orders: anyone can create (checkout), only authenticated admins can read/update.
     match /orders/{orderId} {
       allow create: if
         request.resource.data.keys().hasAll(['customer', 'items', 'total', 'status']) &&
         request.resource.data.total is number &&
         request.resource.data.total > 0;
-      allow read, update, delete: if false;
+      allow read, update: if request.auth != null;
+      allow delete: if false;
     }
 
-    // Contacts: anyone can create (submit form), nobody can read from client.
+    // Contacts: anyone can create (contact form), only authenticated admins can read/update.
     match /contacts/{docId} {
       allow create: if
         request.resource.data.keys().hasAll(['name', 'email', 'subject', 'message']) &&
         request.resource.data.name is string &&
         request.resource.data.email is string &&
         request.resource.data.message.size() >= 10;
-      allow read, update, delete: if false;
+      allow read, update: if request.auth != null;
+      allow delete: if false;
     }
 
   }

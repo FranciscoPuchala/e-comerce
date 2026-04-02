@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel Admin — iPlace</title>
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+<!-- ============================================================
+     LAYOUT
+     ============================================================ -->
+<div class="admin-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <a href="dashboard.html" class="sidebar-logo">
+      <div class="sidebar-logo-icon">iP</div>
+      <div>
+        <div class="sidebar-logo-text">iPlace</div>
+        <span class="sidebar-logo-sub">Panel Admin</span>
+      </div>
+    </a>
+
+    <nav class="sidebar-nav">
+      <div class="sidebar-section">General</div>
+
+      <button class="sidebar-link active" data-tab="dashboard">
+        <span class="sidebar-icon">📊</span> Dashboard
+      </button>
+
+      <button class="sidebar-link" data-tab="orders">
+        <span class="sidebar-icon">📦</span> Pedidos
+        <span class="sidebar-badge" id="badgePending">0</span>
+      </button>
+
+      <button class="sidebar-link" data-tab="messages">
+        <span class="sidebar-icon">💬</span> Mensajes
+        <span class="sidebar-badge" id="badgeMessages">0</span>
+      </button>
+
+      <div class="sidebar-section">Catálogo</div>
+
+      <button class="sidebar-link" data-tab="products">
+        <span class="sidebar-icon">🛍️</span> Productos
+      </button>
+
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-avatar" id="sidebarAvatar">A</div>
+        <div class="sidebar-user-info">
+          <div class="sidebar-user-name" id="sidebarEmail">—</div>
+          <div class="sidebar-user-role">Administrador</div>
+        </div>
+      </div>
+      <button class="sidebar-link" id="logoutBtn">
+        <span class="sidebar-icon">🚪</span> Cerrar sesión
+      </button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main-content">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div class="topbar-title" id="topbarTitle">Dashboard</div>
+      <div class="topbar-actions">
+        <a href="../index.html" class="topbar-btn topbar-btn-store" target="_blank">
+          🔗 Ver tienda
+        </a>
+        <button class="topbar-btn topbar-btn-logout" id="logoutBtn2">Cerrar sesión</button>
+      </div>
+    </div>
+
+    <!-- PAGE BODY -->
+    <div class="page-body">
+
+      <!-- ====================================================
+           TAB: DASHBOARD
+           ==================================================== -->
+      <div class="tab-panel active" id="tab-dashboard">
+
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="stat-icon-wrap green">💰</div>
+            <div class="stat-info">
+              <div class="stat-label">Ingresos totales</div>
+              <div class="stat-value" id="statRevenue">—</div>
+              <div class="stat-sub">todos los pedidos</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon-wrap blue">📦</div>
+            <div class="stat-info">
+              <div class="stat-label">Total pedidos</div>
+              <div class="stat-value" id="statOrders">—</div>
+              <div class="stat-sub" id="statOrdersSub">—</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon-wrap orange">⏳</div>
+            <div class="stat-info">
+              <div class="stat-label">Pendientes</div>
+              <div class="stat-value" id="statPending">—</div>
+              <div class="stat-sub">requieren acción</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon-wrap purple">💬</div>
+            <div class="stat-info">
+              <div class="stat-label">Mensajes nuevos</div>
+              <div class="stat-value" id="statMessages">—</div>
+              <div class="stat-sub">sin leer</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="dashboard-grid">
+          <!-- Recent orders -->
+          <div class="admin-card">
+            <div class="admin-card-header">
+              <div class="admin-card-title">Pedidos recientes</div>
+              <button class="admin-card-action" data-tab-link="orders">Ver todos →</button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Cliente</th>
+                    <th>Total</th>
+                    <th>Método</th>
+                    <th>Estado</th>
+                    <th>Fecha</th>
+                  </tr>
+                </thead>
+                <tbody id="recentOrdersBody">
+                  <tr><td colspan="6"><div class="admin-spinner"></div></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Recent messages -->
+          <div class="admin-card">
+            <div class="admin-card-header">
+              <div class="admin-card-title">Mensajes recientes</div>
+              <button class="admin-card-action" data-tab-link="messages">Ver todos →</button>
+            </div>
+            <div id="recentMessagesList">
+              <div class="admin-spinner"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ====================================================
+           TAB: ORDERS
+           ==================================================== -->
+      <div class="tab-panel" id="tab-orders">
+
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div class="admin-card-title">Todos los pedidos</div>
+            <span class="filter-count" id="orderCount">Cargando...</span>
+          </div>
+
+          <div class="filter-bar">
+            <input type="text" class="search-input" id="orderSearch" placeholder="Buscar por nombre, email o #ID...">
+            <select class="filter-select" id="orderStatusFilter">
+              <option value="">Todos los estados</option>
+              <option value="pending">Pendiente</option>
+              <option value="processing">En proceso</option>
+              <option value="shipped">Enviado</option>
+              <option value="delivered">Entregado</option>
+              <option value="cancelled">Cancelado</option>
+            </select>
+            <select class="filter-select" id="orderPaymentFilter">
+              <option value="">Todos los métodos</option>
+              <option value="mercadopago">MercadoPago</option>
+              <option value="transfer">Transferencia</option>
+            </select>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>#ID</th>
+                  <th>Cliente</th>
+                  <th>Email</th>
+                  <th>Productos</th>
+                  <th>Total</th>
+                  <th>Pago</th>
+                  <th>Estado</th>
+                  <th>Fecha</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="ordersBody">
+                <tr><td colspan="9"><div class="admin-spinner"></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ====================================================
+           TAB: MESSAGES
+           ==================================================== -->
+      <div class="tab-panel" id="tab-messages">
+
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div class="admin-card-title">Mensajes de contacto</div>
+            <span class="filter-count" id="msgCount">Cargando...</span>
+          </div>
+
+          <div class="filter-bar">
+            <input type="text" class="search-input" id="msgSearch" placeholder="Buscar por nombre, email o asunto...">
+            <select class="filter-select" id="msgReadFilter">
+              <option value="">Todos</option>
+              <option value="unread">Sin leer</option>
+              <option value="read">Leídos</option>
+            </select>
+          </div>
+
+          <div id="messagesList">
+            <div class="admin-spinner"></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ====================================================
+           TAB: PRODUCTS
+           ==================================================== -->
+      <div class="tab-panel" id="tab-products">
+
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div class="admin-card-title">Catálogo de productos</div>
+            <span class="filter-count" id="productCount"></span>
+          </div>
+
+          <div class="filter-bar">
+            <input type="text" class="search-input" id="productSearch" placeholder="Buscar producto...">
+            <select class="filter-select" id="productCategoryFilter">
+              <option value="">Todas las categorías</option>
+            </select>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Nombre</th>
+                  <th>Categoría</th>
+                  <th>Precio</th>
+                  <th>Destacado</th>
+                  <th>Badge</th>
+                </tr>
+              </thead>
+              <tbody id="productsBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <p style="margin-top:14px;font-size:.8rem;color:var(--text-muted);text-align:center">
+          Para editar productos, modificá el archivo <code>js/products-data.js</code> en el código fuente.
+        </p>
+
+      </div>
+
+    </div>
+    <!-- /page-body -->
+
+  </div>
+  <!-- /main-content -->
+
+</div>
+<!-- /admin-layout -->
+
+<!-- ============================================================
+     ORDER DETAIL MODAL
+     ============================================================ -->
+<div class="modal-overlay" id="orderModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="modalOrderId">Pedido #—</div>
+        <div style="font-size:.78rem;color:var(--text-muted);margin-top:2px" id="modalOrderDate">—</div>
+      </div>
+      <button class="modal-close" id="modalClose">✕</button>
+    </div>
+
+    <div class="modal-section-label">Cliente</div>
+    <div class="modal-info-grid" id="modalCustomer"></div>
+
+    <div class="modal-section-label">Dirección</div>
+    <div class="modal-info-grid" id="modalAddress"></div>
+
+    <div class="modal-section-label">Productos</div>
+    <div id="modalItems"></div>
+    <div class="modal-total">
+      <span>Total</span>
+      <span id="modalTotal">—</span>
+    </div>
+
+    <div class="modal-section-label">Pago y estado</div>
+    <div class="modal-info-grid" id="modalPayment"></div>
+  </div>
+</div>
+
+<!-- ============================================================
+     MESSAGE DETAIL MODAL
+     ============================================================ -->
+<div class="modal-overlay" id="msgModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="msgModalName">—</div>
+        <div style="font-size:.78rem;color:var(--text-muted);margin-top:2px" id="msgModalDate">—</div>
+      </div>
+      <button class="modal-close" id="msgModalClose">✕</button>
+    </div>
+
+    <div class="modal-section-label">Contacto</div>
+    <div class="modal-info-grid">
+      <div class="modal-info-item">
+        <div class="modal-info-label">Email</div>
+        <div class="modal-info-value" id="msgModalEmail">—</div>
+      </div>
+    </div>
+
+    <div class="modal-section-label">Asunto</div>
+    <div style="font-size:.875rem;font-weight:600;color:var(--text)" id="msgModalSubject">—</div>
+
+    <div class="modal-section-label">Mensaje</div>
+    <div style="font-size:.875rem;color:var(--text);line-height:1.7;white-space:pre-wrap" id="msgModalBody">—</div>
+
+    <div style="margin-top:20px;display:flex;gap:10px">
+      <a class="topbar-btn" style="background:var(--accent);color:#fff;border-radius:6px;padding:8px 14px;font-weight:600;font-size:.84rem;text-decoration:none" id="msgModalReply">
+        ✉️ Responder por email
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="admin-toast-container" id="adminToasts"></div>
+
+<script type="module" src="admin.js"></script>
+</body>
+</html>
