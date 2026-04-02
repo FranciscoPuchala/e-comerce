@@ -3,7 +3,7 @@
 // ============================================================
 
 import { auth, db } from '../js/firebase-config.js';
-import { PRODUCTS, CATEGORIES } from '../js/products-data.js';
+import { PRODUCTS } from '../js/products-data.js';
 import {
   onAuthStateChanged,
   signOut,
@@ -12,10 +12,14 @@ import {
   collection,
   getDocs,
   doc,
+  addDoc,
+  setDoc,
   updateDoc,
+  deleteDoc,
   orderBy,
   query,
   onSnapshot,
+  serverTimestamp,
 } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
 // ============================================================
@@ -515,70 +519,305 @@ async function openMsgModal(m) {
 }
 
 // ============================================================
-//  PRODUCTS — static from products-data.js
+//  PRODUCTS — Firestore CRUD
 // ============================================================
-function initProducts() {
-  // Populate category filter
-  const catSelect = document.getElementById('productCategoryFilter');
-  CATEGORIES.filter(c => c !== 'Todos').forEach(cat => {
-    const opt = document.createElement('option');
-    opt.value = cat;
-    opt.textContent = cat;
-    catSelect.appendChild(opt);
+let allProducts    = [];
+let productSearch  = '';
+let productCat     = '';
+let showInactive   = false;
+let editingProduct = null; // null = new, object = editing
+
+async function initProducts() {
+  // Seed button
+  document.getElementById('seedBtn').addEventListener('click', seedProducts);
+
+  // New product button
+  document.getElementById('newProductBtn').addEventListener('click', () => openProductModal(null));
+
+  // Show inactive toggle
+  document.getElementById('showInactive').addEventListener('change', e => {
+    showInactive = e.target.checked;
+    renderProductsTable();
   });
 
-  document.getElementById('productCount').textContent =
-    `${PRODUCTS.length} producto${PRODUCTS.length !== 1 ? 's' : ''}`;
-
-  renderProductsTable();
-
-  let productSearch = '';
-  let productCat    = '';
-
+  // Search & category filter
+  const catSelect = document.getElementById('productCategoryFilter');
   document.getElementById('productSearch').addEventListener('input', e => {
     productSearch = e.target.value.toLowerCase();
-    renderProductsTable(productSearch, productCat);
+    renderProductsTable();
   });
   catSelect.addEventListener('change', e => {
     productCat = e.target.value;
-    renderProductsTable(productSearch, productCat);
+    renderProductsTable();
   });
+
+  // Product form modal events
+  const productModal = document.getElementById('productModal');
+  document.getElementById('productModalClose').addEventListener('click',  closeProductModal);
+  document.getElementById('productModalCancel').addEventListener('click', closeProductModal);
+  productModal.addEventListener('click', e => { if (e.target === productModal) closeProductModal(); });
+
+  document.getElementById('pfImage').addEventListener('input', e => {
+    const preview = document.getElementById('pfImagePreview');
+    if (!preview) return;
+    preview.src = e.target.value;
+    preview.style.display = e.target.value ? '' : 'none';
+  });
+
+  document.getElementById('addFeatureBtn').addEventListener('click', addFeatureRow);
+
+  document.getElementById('productForm').addEventListener('submit', saveProduct);
+
+  // Load products
+  await loadAdminProducts();
 }
 
-function renderProductsTable(search = '', cat = '') {
-  const tbody = document.getElementById('productsBody');
-  let list = PRODUCTS;
+async function loadAdminProducts() {
+  try {
+    const snap = await getDocs(query(collection(db, 'products'), orderBy('order')));
+    allProducts = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  } catch (e) {
+    // Fallback: try without orderBy in case index missing
+    try {
+      const snap2 = await getDocs(collection(db, 'products'));
+      allProducts = snap2.docs.map(d => ({ id: d.id, ...d.data() }));
+    } catch (e2) {
+      toast('Error al cargar productos', false);
+      console.error(e2);
+      allProducts = [];
+    }
+  }
 
-  if (search) list = list.filter(p =>
-    p.name.toLowerCase().includes(search) ||
-    p.category.toLowerCase().includes(search));
-  if (cat) list = list.filter(p => p.category === cat);
+  // Populate category datalist and filter
+  const cats = [...new Set(allProducts.map(p => p.category).filter(Boolean))].sort();
+  const catList = document.getElementById('pfCatList');
+  if (catList) catList.innerHTML = cats.map(c => `<option value="${c}">`).join('');
+
+  const catSelect = document.getElementById('productCategoryFilter');
+  catSelect.innerHTML = '<option value="">Todas las categorías</option>' +
+    cats.map(c => `<option value="${c}">${c}</option>`).join('');
+
+  renderProductsTable();
+}
+
+function renderProductsTable() {
+  const tbody = document.getElementById('productsBody');
+  let list = showInactive ? allProducts : allProducts.filter(p => p.active !== false);
+
+  if (productSearch) list = list.filter(p =>
+    (p.name ?? '').toLowerCase().includes(productSearch) ||
+    (p.category ?? '').toLowerCase().includes(productSearch));
+  if (productCat) list = list.filter(p => p.category === productCat);
 
   document.getElementById('productCount').textContent =
     `${list.length} producto${list.length !== 1 ? 's' : ''}`;
 
   if (list.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state"><div class="empty-state-icon">🔍</div><h3>Sin resultados</h3></div></td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="empty-state-icon">🔍</div><h3>Sin resultados</h3></div></td></tr>`;
     return;
   }
 
   tbody.innerHTML = list.map(p => `
-    <tr>
-      <td><img class="product-admin-img" src="${p.image}" alt="${p.name}" loading="lazy"></td>
-      <td style="font-weight:600">${p.name}</td>
-      <td><span class="badge" style="background:var(--bg);color:var(--text-muted);border:1px solid var(--border)">${p.category}</span></td>
+    <tr style="${p.active === false ? 'opacity:.45' : ''}">
+      <td><img class="product-admin-img" src="${p.image ?? ''}" alt="${p.name ?? ''}" loading="lazy" onerror="this.style.display='none'"></td>
+      <td style="font-weight:600">${p.name ?? '—'}</td>
+      <td><span class="badge" style="background:var(--bg);color:var(--text-muted);border:1px solid var(--border)">${p.category ?? '—'}</span></td>
       <td style="font-weight:700">${fmtPrice(p.price)}</td>
       <td style="text-align:center">${p.featured ? '⭐' : '—'}</td>
-      <td>${p.badge ? `<span class="badge badge-processing">${p.badge}</span>` : '—'}</td>
+      <td>${p.active === false
+        ? '<span class="badge" style="background:rgba(255,59,48,.1);color:#ff3b30">Inactivo</span>'
+        : '<span class="badge" style="background:rgba(52,199,89,.1);color:#34c759">Activo</span>'}</td>
+      <td style="white-space:nowrap;display:flex;gap:6px">
+        <button class="admin-card-action edit-product-btn" data-id="${p.id}">Editar</button>
+        <button class="admin-card-action toggle-product-btn" data-id="${p.id}" data-active="${p.active !== false}"
+          style="background:${p.active !== false ? 'rgba(255,59,48,.1)' : 'rgba(52,199,89,.1)'};
+                 color:${p.active !== false ? '#ff3b30' : '#34c759'}">
+          ${p.active !== false ? 'Desactivar' : 'Activar'}
+        </button>
+      </td>
     </tr>
   `).join('');
+
+  tbody.querySelectorAll('.edit-product-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const p = allProducts.find(x => x.id === btn.dataset.id);
+      if (p) openProductModal(p);
+    });
+  });
+
+  tbody.querySelectorAll('.toggle-product-btn').forEach(btn => {
+    btn.addEventListener('click', () => toggleProductActive(btn.dataset.id, btn.dataset.active === 'true'));
+  });
+}
+
+// ---- Product Modal ----
+function openProductModal(product) {
+  editingProduct = product;
+  const isNew = !product;
+
+  document.getElementById('productModalTitle').textContent = isNew ? 'Nuevo producto' : 'Editar producto';
+  document.getElementById('productId').value    = product?.id ?? '';
+  document.getElementById('pfName').value       = product?.name ?? '';
+  document.getElementById('pfCategory').value   = product?.category ?? '';
+  document.getElementById('pfPrice').value      = product?.price ?? '';
+  document.getElementById('pfDesc').value       = product?.description ?? '';
+  document.getElementById('pfImage').value      = product?.image ?? '';
+  document.getElementById('pfBadge').value      = product?.badge ?? '';
+  document.getElementById('pfOrder').value      = product?.order ?? '';
+  document.getElementById('pfFeatured').checked = product?.featured ?? false;
+  document.getElementById('pfActive').checked   = product?.active !== false;
+  document.getElementById('pfError').textContent = '';
+
+  const preview = document.getElementById('pfImagePreview');
+  if (preview) {
+    preview.src = product?.image ?? '';
+    preview.style.display = product?.image ? '' : 'none';
+  }
+
+  // Render features
+  const editor = document.getElementById('featuresEditor');
+  editor.innerHTML = '';
+  (product?.features ?? []).forEach(f => addFeatureRow(f));
+
+  document.getElementById('productModal').classList.add('open');
+  document.getElementById('pfName').focus();
+}
+
+function closeProductModal() {
+  document.getElementById('productModal').classList.remove('open');
+  document.getElementById('productForm').reset();
+  document.getElementById('featuresEditor').innerHTML = '';
+  editingProduct = null;
+}
+
+function addFeatureRow(data = {}) {
+  const editor = document.getElementById('featuresEditor');
+  const row = document.createElement('div');
+  row.className = 'feature-row-editor';
+  row.innerHTML = `
+    <input type="text" class="pf-input" placeholder="Ícono (emoji)" value="${data.icon ?? ''}" style="width:60px;text-align:center">
+    <input type="text" class="pf-input" placeholder="Etiqueta" value="${data.label ?? ''}">
+    <input type="text" class="pf-input" placeholder="Valor" value="${data.value ?? ''}">
+    <button type="button" class="feature-remove-btn">✕</button>
+  `;
+  row.querySelector('.feature-remove-btn').addEventListener('click', () => row.remove());
+  editor.appendChild(row);
+}
+
+function getFeatures() {
+  return [...document.getElementById('featuresEditor').querySelectorAll('.feature-row-editor')]
+    .map(row => {
+      const inputs = row.querySelectorAll('input');
+      return { icon: inputs[0].value.trim(), label: inputs[1].value.trim(), value: inputs[2].value.trim() };
+    })
+    .filter(f => f.label || f.value);
+}
+
+async function saveProduct(e) {
+  e.preventDefault();
+  const errEl = document.getElementById('pfError');
+  errEl.textContent = '';
+
+  const name     = document.getElementById('pfName').value.trim();
+  const category = document.getElementById('pfCategory').value.trim();
+  const price    = parseFloat(document.getElementById('pfPrice').value);
+  const desc     = document.getElementById('pfDesc').value.trim();
+  const image    = document.getElementById('pfImage').value.trim();
+
+  if (!name || !category || isNaN(price) || !desc || !image) {
+    errEl.textContent = 'Completá todos los campos obligatorios (*)';
+    return;
+  }
+
+  const data = {
+    name,
+    category,
+    price,
+    description: desc,
+    image,
+    badge:    document.getElementById('pfBadge').value.trim() || null,
+    order:    parseInt(document.getElementById('pfOrder').value) || 999,
+    featured: document.getElementById('pfFeatured').checked,
+    active:   document.getElementById('pfActive').checked,
+    features: getFeatures(),
+    updatedAt: serverTimestamp(),
+  };
+
+  const submitBtn = document.getElementById('pfSubmitBtn');
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Guardando...';
+
+  try {
+    const docId = document.getElementById('productId').value;
+    if (docId) {
+      await updateDoc(doc(db, 'products', docId), data);
+      toast('Producto actualizado');
+    } else {
+      data.createdAt = serverTimestamp();
+      await addDoc(collection(db, 'products'), data);
+      toast('Producto creado');
+    }
+    closeProductModal();
+    await loadAdminProducts();
+  } catch (err) {
+    errEl.textContent = 'Error al guardar. Intentá de nuevo.';
+    console.error(err);
+    toast('Error al guardar producto', false);
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Guardar producto';
+  }
+}
+
+async function toggleProductActive(id, currentlyActive) {
+  try {
+    await updateDoc(doc(db, 'products', id), { active: !currentlyActive });
+    toast(currentlyActive ? 'Producto desactivado' : 'Producto activado');
+    await loadAdminProducts();
+  } catch (e) {
+    toast('Error al actualizar producto', false);
+    console.error(e);
+  }
+}
+
+// ---- Seed static products to Firestore (one-time) ----
+async function seedProducts() {
+  const btn = document.getElementById('seedBtn');
+  btn.disabled = true;
+  btn.textContent = 'Cargando...';
+  try {
+    for (const p of PRODUCTS) {
+      await setDoc(doc(db, 'products', String(p.id)), {
+        name:        p.name,
+        category:    p.category,
+        price:       p.price,
+        description: p.description,
+        image:       p.image,
+        badge:       p.badge ?? null,
+        featured:    p.featured ?? false,
+        order:       p.order ?? 999,
+        features:    p.features ?? [],
+        active:      true,
+        createdAt:   serverTimestamp(),
+        updatedAt:   serverTimestamp(),
+      });
+    }
+    toast(`${PRODUCTS.length} productos cargados en Firestore`);
+    await loadAdminProducts();
+  } catch (e) {
+    toast('Error al cargar productos', false);
+    console.error(e);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Cargar datos iniciales';
+  }
 }
 
 // ============================================================
 //  INIT
 // ============================================================
-function initAdmin() {
+async function initAdmin() {
   initOrders();
   initMessages();
-  initProducts();
+  await initProducts();
 }

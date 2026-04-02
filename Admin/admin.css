@@ -1000,6 +1000,38 @@ tr:hover td { background: rgba(0,0,0,.015); }
 }
 
 /* ============================================================
+   PRODUCT FORM
+   ============================================================ */
+.pf-group { display: flex; flex-direction: column; gap: 5px; }
+.pf-label { font-size: .8rem; font-weight: 600; color: var(--text); }
+.pf-input {
+  padding: 8px 11px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font);
+  font-size: .875rem;
+  color: var(--text);
+  outline: none;
+  transition: border-color var(--t), box-shadow var(--t);
+  width: 100%;
+  resize: vertical;
+}
+.pf-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0,113,227,.1); }
+.pf-error { font-size: .82rem; color: var(--error); min-height: 18px; margin-top: 4px; }
+
+.feature-row-editor {
+  display: grid;
+  grid-template-columns: 48px 1fr 2fr auto;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.feature-row-editor input { padding: 6px 9px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-family: var(--font); font-size: .82rem; outline: none; width: 100%; }
+.feature-row-editor input:focus { border-color: var(--accent); }
+.feature-remove-btn { width: 28px; height: 28px; border-radius: 50%; background: rgba(255,69,58,.1); color: var(--error); border: none; cursor: pointer; font-size: .9rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.feature-remove-btn:hover { background: rgba(255,69,58,.2); }
+
+/* ============================================================
    RESPONSIVE
    ============================================================ */
 @media (max-width: 1100px) {

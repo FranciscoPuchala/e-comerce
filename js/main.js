@@ -3,16 +3,13 @@
 // ============================================================
 
 import { Cart, updateCartBadge, showToast, initHeader, formatPrice } from './cart-utils.js';
-import { getFeaturedProducts, getAccessories } from './products-data.js';
+import { getFeaturedProducts, getAccessories } from './products-db.js';
 import { initScrollFX } from './scroll-fx.js';
 
 function buildCard(product) {
-  const badge = product.badge
-    ? `<span class="badge badge-new">${product.badge}</span>`
-    : '';
+  const badge = product.badge ? `<span class="badge badge-new">${product.badge}</span>` : '';
   return `
-    <article class="product-card sfx-scale"
-      onclick="window.location.href='Producto/index.html?id=${product.id}'"
+    <article class="product-card sfx-scale" data-id="${product.id}"
       role="button" tabindex="0" aria-label="Ver ${product.name}">
       <div class="product-img-wrap">
         <img src="${product.image}" alt="${product.name}" loading="lazy">
@@ -23,43 +20,45 @@ function buildCard(product) {
         <p class="product-desc">${product.description}</p>
         <div class="product-footer">
           <span class="product-price">${formatPrice(product.price)}</span>
-          <button class="add-to-cart-btn" data-id="${product.id}" onclick="event.stopPropagation()">
-            + Agregar
-          </button>
+          <button class="add-to-cart-btn" data-id="${product.id}">+ Agregar</button>
         </div>
       </div>
     </article>`;
 }
 
-function renderFeatured() {
+async function renderFeatured() {
   const grid = document.getElementById('featuredGrid');
   if (!grid) return;
-  grid.innerHTML = getFeaturedProducts().map(p => buildCard(p)).join('');
+  const products = await getFeaturedProducts();
+  grid.innerHTML = products.map(p => buildCard(p)).join('');
 }
 
-function renderAccessories() {
+async function renderAccessories() {
   const grid = document.getElementById('accessoriesGrid');
   if (!grid) return;
-  grid.innerHTML = getAccessories().map(p => buildCard(p)).join('');
+  const products = await getAccessories();
+  grid.innerHTML = products.map(p => buildCard(p)).join('');
 }
 
 function initAddToCart() {
   document.querySelectorAll('.product-grid').forEach(grid => {
-    grid.addEventListener('click', (e) => {
+    grid.addEventListener('click', async (e) => {
       const btn = e.target.closest('.add-to-cart-btn');
-      if (!btn) return;
+      if (!btn) {
+        const card = e.target.closest('.product-card');
+        if (card) window.location.href = `Producto/index.html?id=${card.dataset.id}`;
+        return;
+      }
 
       const id = btn.dataset.id;
-      const card = btn.closest('.product-card');
-      const name = card.querySelector('.product-name').textContent;
-      const priceText = card.querySelector('.product-price').textContent;
-      const image = card.querySelector('img').src;
-      const category = card.querySelector('.product-category').textContent.trim().split('\n')[0].trim();
-      const price = parseFloat(priceText.replace(/[^0-9,.]/g, '').replace(',', '.'));
+      const { getAllProducts } = await import('./products-db.js');
+      const list = await getAllProducts();
+      const product = list.find(p => String(p.id) === id);
+      if (!product) return;
 
-      Cart.add({ id, name, price, image, category });
+      Cart.add(product);
       updateCartBadge();
-      showToast(`${name} agregado al carrito`, 'success', image);
+      showToast(`${product.name} agregado al carrito`, 'success', product.image);
 
       btn.textContent = '✓';
       btn.style.background = 'var(--success)';
@@ -74,23 +73,16 @@ function initAddToCart() {
 function initReveal() {
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        observer.unobserve(entry.target);
-      }
+      if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); }
     });
   }, { threshold: 0.1 });
   document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   initHeader();
   updateCartBadge();
-  renderFeatured();
-  renderAccessories();
+  await Promise.all([renderFeatured(), renderAccessories()]);
   initAddToCart();
-  setTimeout(() => {
-    initReveal();
-    initScrollFX();
-  }, 80);
+  setTimeout(() => { initReveal(); initScrollFX(); }, 80);
 });

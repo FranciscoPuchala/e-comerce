@@ -33,5 +33,11 @@ service cloud.firestore {
       allow delete: if false;
     }
 
+    // Products: anyone can read active products, only admins can write.
+    match /products/{productId} {
+      allow read: if true;
+      allow create, update, delete: if request.auth != null;
+    }
+
   }
 }

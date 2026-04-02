@@ -249,7 +249,15 @@
         <div class="admin-card">
           <div class="admin-card-header">
             <div class="admin-card-title">Catálogo de productos</div>
-            <span class="filter-count" id="productCount"></span>
+            <div style="display:flex;gap:8px;align-items:center">
+              <span class="filter-count" id="productCount"></span>
+              <button class="topbar-btn" id="seedBtn" style="background:rgba(94,92,230,.1);color:var(--purple);font-size:.75rem" title="Carga los productos de ejemplo en Firestore (solo la primera vez)">
+                📥 Cargar datos iniciales
+              </button>
+              <button class="topbar-btn" id="newProductBtn" style="background:var(--accent);color:#fff">
+                + Nuevo producto
+              </button>
+            </div>
           </div>
 
           <div class="filter-bar">
@@ -257,6 +265,9 @@
             <select class="filter-select" id="productCategoryFilter">
               <option value="">Todas las categorías</option>
             </select>
+            <label style="display:flex;align-items:center;gap:6px;font-size:.82rem;color:var(--text-muted);cursor:pointer">
+              <input type="checkbox" id="showInactive"> Ver inactivos
+            </label>
           </div>
 
           <div class="table-wrap">
@@ -268,17 +279,16 @@
                   <th>Categoría</th>
                   <th>Precio</th>
                   <th>Destacado</th>
-                  <th>Badge</th>
+                  <th>Estado</th>
+                  <th>Acciones</th>
                 </tr>
               </thead>
-              <tbody id="productsBody"></tbody>
+              <tbody id="productsBody">
+                <tr><td colspan="7"><div class="admin-spinner"></div></td></tr>
+              </tbody>
             </table>
           </div>
         </div>
-
-        <p style="margin-top:14px;font-size:.8rem;color:var(--text-muted);text-align:center">
-          Para editar productos, modificá el archivo <code>js/products-data.js</code> en el código fuente.
-        </p>
 
       </div>
 
@@ -354,6 +364,79 @@
         ✉️ Responder por email
       </a>
     </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     PRODUCT FORM MODAL
+     ============================================================ -->
+<div class="modal-overlay" id="productModal">
+  <div class="modal" style="max-width:640px">
+    <div class="modal-header">
+      <div class="modal-title" id="productModalTitle">Nuevo producto</div>
+      <button class="modal-close" id="productModalClose">✕</button>
+    </div>
+
+    <form id="productForm" novalidate>
+      <input type="hidden" id="productId">
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div class="pf-group" style="grid-column:1/-1">
+          <label class="pf-label">Nombre *</label>
+          <input type="text" class="pf-input" id="pfName" placeholder="iPhone 16 Pro Max" required>
+        </div>
+        <div class="pf-group">
+          <label class="pf-label">Categoría *</label>
+          <input type="text" class="pf-input" id="pfCategory" placeholder="iPhone" list="pfCatList" required>
+          <datalist id="pfCatList"></datalist>
+        </div>
+        <div class="pf-group">
+          <label class="pf-label">Precio (ARS) *</label>
+          <input type="number" class="pf-input" id="pfPrice" placeholder="999999" min="0" required>
+        </div>
+        <div class="pf-group" style="grid-column:1/-1">
+          <label class="pf-label">Descripción *</label>
+          <textarea class="pf-input" id="pfDesc" rows="3" placeholder="Descripción del producto..." required></textarea>
+        </div>
+        <div class="pf-group" style="grid-column:1/-1">
+          <label class="pf-label">URL de imagen *</label>
+          <input type="url" class="pf-input" id="pfImage" placeholder="https://..." required>
+          <img id="pfImagePreview" src="" alt="" style="display:none;width:80px;height:80px;object-fit:cover;border-radius:8px;margin-top:8px;border:1px solid var(--border)">
+        </div>
+        <div class="pf-group">
+          <label class="pf-label">Badge (opcional)</label>
+          <input type="text" class="pf-input" id="pfBadge" placeholder="Nuevo, Oferta...">
+        </div>
+        <div class="pf-group">
+          <label class="pf-label">Orden de aparición</label>
+          <input type="number" class="pf-input" id="pfOrder" placeholder="1" min="0">
+        </div>
+        <div class="pf-group" style="display:flex;align-items:center;gap:20px;grid-column:1/-1;padding:4px 0">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:.875rem;font-weight:500">
+            <input type="checkbox" id="pfFeatured"> Producto destacado (aparece en inicio)
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:.875rem;font-weight:500">
+            <input type="checkbox" id="pfActive" checked> Activo (visible en la tienda)
+          </label>
+        </div>
+      </div>
+
+      <!-- Specs / Features -->
+      <div style="margin-top:20px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <span style="font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted)">Especificaciones (opcional)</span>
+          <button type="button" class="admin-card-action" id="addFeatureBtn">+ Agregar</button>
+        </div>
+        <div id="featuresEditor"></div>
+      </div>
+
+      <p class="pf-error" id="pfError"></p>
+
+      <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">
+        <button type="button" class="topbar-btn" id="productModalCancel" style="background:var(--bg);color:var(--text-muted)">Cancelar</button>
+        <button type="submit" class="topbar-btn" id="pfSubmitBtn" style="background:var(--accent);color:#fff">Guardar producto</button>
+      </div>
+    </form>
   </div>
 </div>
 
