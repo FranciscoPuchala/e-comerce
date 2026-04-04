@@ -46,22 +46,41 @@ if (empty($items) || empty($payer['email']) || empty($orderId)) {
     exit;
 }
 
-// Validar y construir items con precios del servidor
+// Validar y construir items
+// Si el producto está en PRICE_LIST usamos el precio del servidor (más seguro).
+// Si es un producto de Firestore (ID no numérico o fuera del listado), usamos
+// el precio enviado por el cliente pero lo validamos que sea positivo.
 $mpItems = [];
 foreach ($items as $item) {
-    $id  = (string)($item['id'] ?? '');
-    $qty = (int)($item['quantity'] ?? 0);
+    $id    = (string)($item['id'] ?? '');
+    $qty   = (int)($item['quantity'] ?? 0);
+    $title = (string)($item['title'] ?? 'Producto');
 
-    if (!isset($PRICE_LIST[$id]) || $qty < 1 || $qty > 99) {
+    if ($qty < 1 || $qty > 99) {
         http_response_code(400);
-        echo json_encode(['error' => "Producto inválido: $id"]);
+        echo json_encode(['error' => "Cantidad inválida para producto: $id"]);
         exit;
+    }
+
+    if (isset($PRICE_LIST[$id])) {
+        // Producto hardcodeado: usamos precio del servidor
+        $price = (float)$PRICE_LIST[$id]['price'];
+        $name  = $PRICE_LIST[$id]['name'];
+    } else {
+        // Producto de Firestore: usamos precio del cliente, validamos que sea > 0
+        $price = (float)($item['unit_price'] ?? 0);
+        $name  = $title;
+        if ($price <= 0) {
+            http_response_code(400);
+            echo json_encode(['error' => "Precio inválido para producto: $id"]);
+            exit;
+        }
     }
 
     $mpItems[] = [
         'id'          => $id,
-        'title'       => $PRICE_LIST[$id]['name'],
-        'unit_price'  => (float)$PRICE_LIST[$id]['price'],
+        'title'       => $name,
+        'unit_price'  => $price,
         'quantity'    => $qty,
         'currency_id' => 'ARS',
     ];
