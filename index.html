@@ -112,10 +112,6 @@
 
     <!-- Actions -->
     <div class="nav-actions">
-      <a href="Cuenta/index.html" class="btn btn-ghost btn-sm" id="accountBtn" aria-label="Mi cuenta" style="padding:7px 14px;font-size:.82rem">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px;vertical-align:middle;margin-right:4px"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-        <span id="accountLabel">Cuenta</span>
-      </a>
 <!-- Cart -->
       <a href="Carrito/index.html" class="cart-btn" aria-label="Ver carrito">
         <span class="cart-shimmer"></span>
@@ -433,14 +429,6 @@
 <div class="notification" id="toastContainer" aria-live="polite"></div>
 
 <script type="module" src="js/main.js"></script>
-<script type="module">
-  import { auth } from './js/firebase-config.js';
-  import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
-  onAuthStateChanged(auth, user => {
-    const label = document.getElementById('accountLabel');
-    if (label) label.textContent = user ? (user.displayName?.split(' ')[0] ?? 'Cuenta') : 'Cuenta';
-  });
-</script>
 <script>
   // ---- Announcement bar close ----
   document.getElementById('annClose')?.addEventListener('click', () => {

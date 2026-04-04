@@ -4,8 +4,7 @@
 
 import { Cart, Wishlist, updateCartBadge, showToast, initHeader, formatPrice } from '../js/cart-utils.js';
 import { getProductById, getRelatedProducts } from '../js/products-db.js';
-import { auth, db } from '../js/firebase-config.js';
-import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+import { db } from '../js/firebase-config.js';
 import {
   collection, addDoc, query, where, orderBy,
   getDocs, serverTimestamp,
@@ -210,6 +209,12 @@ function initReviews(productId) {
   const formSection = document.getElementById('reviewFormSection');
   if (!formSection) return;
 
+  // Show form directly — no login required
+  const loginMsg = document.getElementById('reviewLoginMsg');
+  const form = document.getElementById('reviewForm');
+  if (loginMsg) loginMsg.style.display = 'none';
+  if (form) form.style.display = '';
+
   // Star selector
   stars.forEach(btn => {
     btn.addEventListener('mouseenter', () => {
@@ -225,24 +230,9 @@ function initReviews(productId) {
     });
   });
 
-  // Auth-aware form display
-  onAuthStateChanged(auth, user => {
-    const loginMsg = document.getElementById('reviewLoginMsg');
-    const form = document.getElementById('reviewForm');
-    if (user) {
-      loginMsg.style.display = 'none';
-      form.style.display = '';
-    } else {
-      loginMsg.style.display = '';
-      form.style.display = 'none';
-    }
-  });
-
   // Submit
   document.getElementById('submitReviewBtn')?.addEventListener('click', async () => {
-    const user = auth.currentUser;
-    if (!user) return;
-
+    const authorName = (document.getElementById('reviewAuthor')?.value.trim()) || 'Anónimo';
     const title = document.getElementById('reviewTitle').value.trim();
     const body = document.getElementById('reviewBody').value.trim();
     const errEl = document.getElementById('reviewFormError');
@@ -262,11 +252,11 @@ function initReviews(productId) {
         rating: selectedRating,
         title,
         body,
-        authorName: user.displayName ?? user.email?.split('@')[0] ?? 'Usuario',
-        authorEmail: user.email,
+        authorName,
         createdAt: serverTimestamp(),
       });
       showToast('¡Reseña publicada!', 'success');
+      if (document.getElementById('reviewAuthor')) document.getElementById('reviewAuthor').value = '';
       document.getElementById('reviewTitle').value = '';
       document.getElementById('reviewBody').value = '';
       selectedRating = 0;

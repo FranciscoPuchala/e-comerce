@@ -145,10 +145,12 @@
             <!-- Review form -->
             <div id="reviewFormSection" style="margin-top:32px;padding:24px;background:var(--bg-alt);border:1.5px solid var(--border);border-radius:var(--radius)">
               <h3 style="font-size:1rem;font-weight:700;margin-bottom:16px" id="reviewFormTitle">Escribir una reseña</h3>
-              <div id="reviewLoginMsg" style="display:none;font-size:.875rem;color:var(--text-muted);text-align:center;padding:16px">
-                <a href="../Cuenta/index.html" style="color:var(--accent)">Iniciá sesión</a> para dejar una reseña.
-              </div>
+              <div id="reviewLoginMsg" style="display:none"></div>
               <div id="reviewForm" style="display:none">
+                <div style="margin-bottom:16px">
+                  <label for="reviewAuthor" style="font-size:.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:6px">Tu nombre</label>
+                  <input type="text" id="reviewAuthor" class="form-input" placeholder="Ej: Juan P." maxlength="40">
+                </div>
                 <div style="margin-bottom:16px">
                   <label style="font-size:.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:6px">Tu puntuación *</label>
                   <div class="star-selector" id="starSelector" role="group" aria-label="Puntuación">
