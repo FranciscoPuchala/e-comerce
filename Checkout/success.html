@@ -75,7 +75,7 @@
 
       <div class="success-actions">
         <a href="../index.html" class="btn btn-primary">Volver al inicio</a>
-        <a href="../Pedido/index.html" class="btn btn-ghost" id="trackOrderBtn">Seguir mi pedido</a>
+        <a href="../Productos/index.html" class="btn btn-ghost">Seguir comprando</a>
       </div>
 
       <div class="success-trust">
@@ -128,12 +128,6 @@
       localStorage.removeItem('iplace_pending_order');
     }
 
-    // Link to tracking page with order ID pre-filled
-    const trackBtn = document.getElementById('trackOrderBtn');
-    if (trackBtn && displayId) {
-      const shortId = displayId.replace('IPL-', '');
-      trackBtn.href = `../Pedido/index.html?order=${shortId}`;
-    }
   </script>
 </body>
 </html>

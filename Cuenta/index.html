@@ -41,8 +41,7 @@
     .user-name { font-weight: 700; font-size: 1rem; }
     .user-email { font-size: .8rem; color: var(--text-muted); }
     .orders-section h3 { font-size: 1rem; font-weight: 700; margin-bottom: 16px; }
-    .order-row { background: var(--bg-alt); border: 1.5px solid var(--border); border-radius: var(--radius-sm); padding: 16px 20px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; cursor: pointer; transition: border-color var(--t); text-decoration: none; color: inherit; }
-    .order-row:hover { border-color: var(--accent); }
+    .order-row { background: var(--bg-alt); border: 1.5px solid var(--border); border-radius: var(--radius-sm); padding: 16px 20px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
     .order-row-left strong { display: block; font-size: .9rem; }
     .order-row-left span { font-size: .8rem; color: var(--text-muted); }
     .order-row-right { text-align: right; }
@@ -205,7 +204,6 @@
     <div class="footer-col">
       <h5>Soporte</h5>
       <a href="../Contacto/index.html">Contacto</a>
-      <a href="../Pedido/index.html">Seguir mi pedido</a>
     </div>
     <div class="footer-col">
       <h5>Legal</h5>
@@ -306,7 +304,7 @@
           : '';
         const statusInfo = STATUS_LABELS[o.status] ?? STATUS_LABELS.pending;
         return `
-          <a class="order-row" href="../Pedido/index.html?order=${docSnap.id.slice(-8).toUpperCase()}">
+          <div class="order-row">
             <div class="order-row-left">
               <strong>${displayId}</strong>
               <span>${date} · ${o.items?.length ?? 0} producto${(o.items?.length ?? 0) !== 1 ? 's' : ''}</span>
@@ -315,7 +313,7 @@
               <strong>${formatPrice(o.total)}</strong>
               <span class="status-pill ${statusInfo.cls}">${statusInfo.label}</span>
             </div>
-          </a>`;
+          </div>`;
       }).join('');
     } catch (err) {
       console.error(err);

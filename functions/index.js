@@ -99,9 +99,9 @@ function buildOrderConfirmationEmail(order, orderId) {
           </div>
 
           <div style="margin-top:24px;text-align:center">
-            <a href="https://iplace.com/Pedido/index.html?order=${orderId.slice(-8).toUpperCase()}"
+            <a href="https://iplace.com"
                style="display:inline-block;background:#0071e3;color:#fff;padding:12px 28px;border-radius:20px;text-decoration:none;font-weight:600">
-              Seguir mi pedido →
+              Ir a iPlace →
             </a>
           </div>
         </div>
