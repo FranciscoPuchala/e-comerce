@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="../css/header.css">
 </head>
 <body>
+<a href="#main-content" class="skip-nav">Saltar al contenido</a>
 
 <header class="site-header" id="header">
   <div class="header-top-line"></div>
@@ -39,7 +40,7 @@
   </nav>
 </header>
 
-  <main>
+  <main id="main-content">
     <section class="page-hero">
       <div class="container">
         <h1>Finalizar compra</h1>
@@ -57,6 +58,13 @@
 
     <section class="section" id="checkoutSection">
       <div class="container">
+        <nav class="breadcrumb" aria-label="Navegación" style="margin-bottom:24px">
+          <a href="../index.html">Inicio</a>
+          <span class="breadcrumb-sep">›</span>
+          <a href="../Carrito/index.html">Carrito</a>
+          <span class="breadcrumb-sep">›</span>
+          <span class="bc-current">Checkout</span>
+        </nav>
         <div class="checkout-layout">
 
           <!-- LEFT: forms -->
@@ -136,9 +144,22 @@
                   <span class="payment-logo">🏦</span>
                   <div class="payment-option-info">
                     <div class="payment-option-name">Transferencia bancaria</div>
-                    <div class="payment-option-desc">Recibirás los datos por email</div>
+                    <div class="payment-option-desc">Transferí y envianos el comprobante</div>
                   </div>
                 </label>
+              </div>
+
+              <!-- Bank details panel (visible only when transfer is selected) -->
+              <div id="bankDetails" style="display:none;margin-top:16px;padding:16px;background:var(--bg-alt);border-radius:12px;border:1.5px solid var(--border)">
+                <p style="font-weight:600;margin-bottom:12px;font-size:.9rem">Datos para la transferencia:</p>
+                <div style="display:grid;gap:6px;font-size:.875rem">
+                  <div style="display:flex;justify-content:space-between"><span style="color:var(--text-muted)">Banco:</span> <strong>Banco Galicia</strong></div>
+                  <div style="display:flex;justify-content:space-between"><span style="color:var(--text-muted)">Titular:</span> <strong>iPlace S.R.L.</strong></div>
+                  <div style="display:flex;justify-content:space-between"><span style="color:var(--text-muted)">CBU:</span> <strong>0070023820000000123456</strong></div>
+                  <div style="display:flex;justify-content:space-between"><span style="color:var(--text-muted)">Alias:</span> <strong>IPLACE.TIENDA</strong></div>
+                  <div style="display:flex;justify-content:space-between"><span style="color:var(--text-muted)">CUIT:</span> <strong>30-71234567-8</strong></div>
+                </div>
+                <p style="margin-top:12px;font-size:.8rem;color:var(--text-muted)">Una vez realizada la transferencia, enviá el comprobante a <strong>pagos@iplace.com</strong> con tu número de pedido.</p>
               </div>
             </div>
 
@@ -194,12 +215,12 @@
       </div>
       <div class="footer-col">
         <h5>Legal</h5>
-        <a href="#">Privacidad</a>
-        <a href="#">Términos</a>
+        <a href="../legal.html#privacidad">Privacidad</a>
+        <a href="../legal.html#terminos">Términos</a>
       </div>
       <div class="footer-col">
         <h5>Devoluciones</h5>
-        <a href="#">Política de devoluciones</a>
+        <a href="../legal.html#devoluciones">Política de devoluciones</a>
       </div>
     </div>
     <div class="footer-bottom">

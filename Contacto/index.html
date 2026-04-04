@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="../css/header.css">
 </head>
 <body>
+<a href="#main-content" class="skip-nav">Saltar al contenido</a>
 
 <div class="announcement-bar" id="announcementBar">
   <div class="announcement-bar-inner">
@@ -65,7 +66,7 @@
   </nav>
 </header>
 
-  <main>
+  <main id="main-content">
     <section class="page-hero">
       <div class="container">
         <h1>Contactanos</h1>
@@ -75,6 +76,12 @@
 
     <section class="section">
       <div class="container">
+        <nav class="breadcrumb" aria-label="Navegación">
+          <a href="../index.html">Inicio</a>
+          <span class="breadcrumb-sep">›</span>
+          <span class="bc-current">Contacto</span>
+        </nav>
+
         <div class="contact-grid">
 
           <!-- Contact info -->
@@ -184,12 +191,12 @@
       <div class="footer-col">
         <h5>Soporte</h5>
         <a href="index.html">Contacto</a>
-        <a href="#">Devoluciones</a>
+        <a href="../legal.html#devoluciones">Devoluciones</a>
       </div>
       <div class="footer-col">
         <h5>Legal</h5>
-        <a href="#">Privacidad</a>
-        <a href="#">Términos</a>
+        <a href="../legal.html#privacidad">Privacidad</a>
+        <a href="../legal.html#terminos">Términos</a>
       </div>
     </div>
     <div class="footer-bottom">

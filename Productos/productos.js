@@ -2,13 +2,16 @@
 //  Products Page Logic
 // ============================================================
 
-import { Cart, updateCartBadge, showToast, initHeader, formatPrice } from '../js/cart-utils.js';
+import { Cart, Wishlist, updateCartBadge, showToast, initHeader, formatPrice } from '../js/cart-utils.js';
 import { getAllProducts, getProductsByCategory, getCategories, invalidateCache } from '../js/products-db.js';
 
 let activeCategory = 'Todos';
 let activeSort = 'default';
 let activePriceRange = 'all';
+let activeSearch = '';
 let allProducts = [];
+let currentPage = 1;
+const PAGE_SIZE = 12;
 
 const PRICE_RANGES = {
   all:  [0, Infinity],
@@ -46,7 +49,10 @@ function buildCard(product) {
             <span class="product-price">${formatPrice(product.price)}</span>
             ${getStockBadge(product.id)}
           </div>
-          <button class="add-to-cart-btn" data-id="${product.id}">+ Agregar</button>
+          <div style="display:flex;gap:6px;align-items:center">
+            <button class="wish-btn" data-id="${product.id}" aria-label="Favorito" title="Agregar a favoritos" style="background:none;border:none;cursor:pointer;font-size:1.1rem;padding:4px;color:${Wishlist.has(product.id) ? 'var(--error)' : 'var(--text-muted)'}">${Wishlist.has(product.id) ? '♥' : '♡'}</button>
+            <button class="add-to-cart-btn" data-id="${product.id}">+ Agregar</button>
+          </div>
         </div>
       </div>
     </article>`;
@@ -55,6 +61,16 @@ function buildCard(product) {
 function applyFiltersAndSort(products) {
   const [min, max] = PRICE_RANGES[activePriceRange] ?? [0, Infinity];
   let result = products.filter(p => p.price >= min && p.price < max);
+
+  if (activeSearch) {
+    const q = activeSearch.toLowerCase();
+    result = result.filter(p =>
+      p.name.toLowerCase().includes(q) ||
+      p.description?.toLowerCase().includes(q) ||
+      p.category?.toLowerCase().includes(q)
+    );
+  }
+
   if (activeSort === 'price-asc')  result = [...result].sort((a, b) => a.price - b.price);
   if (activeSort === 'price-desc') result = [...result].sort((a, b) => b.price - a.price);
   if (activeSort === 'name-asc')   result = [...result].sort((a, b) => a.name.localeCompare(b.name));
@@ -92,18 +108,59 @@ async function renderCategories() {
   });
 }
 
-async function renderProducts() {
+function renderPagination(totalProducts) {
+  let paginationEl = document.getElementById('pagination');
+  if (!paginationEl) {
+    paginationEl = document.createElement('div');
+    paginationEl.id = 'pagination';
+    paginationEl.className = 'pagination';
+    document.getElementById('productGrid').after(paginationEl);
+  }
+
+  const totalPages = Math.ceil(totalProducts / PAGE_SIZE);
+  if (totalPages <= 1) { paginationEl.innerHTML = ''; return; }
+
+  let html = '';
+  if (currentPage > 1) {
+    html += `<button class="page-btn" data-page="${currentPage - 1}">‹ Anterior</button>`;
+  }
+  for (let i = 1; i <= totalPages; i++) {
+    html += `<button class="page-btn${i === currentPage ? ' active' : ''}" data-page="${i}">${i}</button>`;
+  }
+  if (currentPage < totalPages) {
+    html += `<button class="page-btn" data-page="${currentPage + 1}">Siguiente ›</button>`;
+  }
+  paginationEl.innerHTML = html;
+
+  paginationEl.addEventListener('click', (e) => {
+    const btn = e.target.closest('.page-btn');
+    if (!btn) return;
+    currentPage = parseInt(btn.dataset.page, 10);
+    renderProducts(false);
+    document.getElementById('productGrid').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+}
+
+async function renderProducts(resetPage = true) {
   const grid = document.getElementById('productGrid');
   const noResults = document.getElementById('noResults');
   if (!grid) return;
 
+  if (resetPage) currentPage = 1;
+
   renderSkeletons(grid);
 
   const base = await getProductsByCategory(activeCategory);
-  const products = applyFiltersAndSort(base);
+  const filtered = applyFiltersAndSort(base);
+  const paginated = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
 
-  noResults.style.display = products.length === 0 ? '' : 'none';
-  grid.innerHTML = products.map(buildCard).join('');
+  noResults.style.display = filtered.length === 0 ? '' : 'none';
+  noResults.textContent = activeSearch
+    ? `No se encontraron productos para "${activeSearch}".`
+    : 'No se encontraron productos en esta categoría.';
+  grid.innerHTML = paginated.map(buildCard).join('');
+
+  renderPagination(filtered.length);
 
   grid.querySelectorAll('.product-card').forEach((card, i) => {
     card.style.opacity = '0';
@@ -138,6 +195,20 @@ function initAddToCart() {
   if (!grid) return;
 
   grid.addEventListener('click', async (e) => {
+    // Wishlist button
+    const wishBtn = e.target.closest('.wish-btn');
+    if (wishBtn) {
+      const id = wishBtn.dataset.id;
+      const { getAllProducts } = await import('../js/products-db.js');
+      const list = await getAllProducts();
+      const product = list.find(p => String(p.id) === id);
+      const added = Wishlist.toggle(id);
+      wishBtn.textContent = added ? '♥' : '♡';
+      wishBtn.style.color = added ? 'var(--error)' : 'var(--text-muted)';
+      if (product) showToast(added ? `${product.name} agregado a favoritos` : 'Eliminado de favoritos', added ? 'success' : 'default', added ? product.image : null);
+      return;
+    }
+
     const btn = e.target.closest('.add-to-cart-btn');
     if (btn) {
       const id = btn.dataset.id;
@@ -164,12 +235,35 @@ function initAddToCart() {
   });
 }
 
+function initSearch() {
+  const input = document.getElementById('searchInput');
+  const clearBtn = document.getElementById('searchClear');
+  if (!input) return;
+
+  let debounceTimer;
+  input.addEventListener('input', () => {
+    clearTimeout(debounceTimer);
+    activeSearch = input.value.trim();
+    clearBtn.style.display = activeSearch ? '' : 'none';
+    debounceTimer = setTimeout(() => renderProducts(), 280);
+  });
+
+  clearBtn?.addEventListener('click', () => {
+    input.value = '';
+    activeSearch = '';
+    clearBtn.style.display = 'none';
+    input.focus();
+    renderProducts();
+  });
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
   initHeader();
   updateCartBadge();
   activeCategory = getCategoryFromURL();
   await renderCategories();
   initSortBar();
+  initSearch();
   renderProducts();
   initAddToCart();
 });

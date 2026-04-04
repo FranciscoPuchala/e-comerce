@@ -20,10 +20,10 @@
   <main class="success-page">
     <div class="success-card">
 
-      <div class="success-checkmark">✓</div>
+      <div class="success-checkmark" id="successIcon">✓</div>
 
-      <h1 class="success-title">¡Pago exitoso!</h1>
-      <p class="success-subtitle">
+      <h1 class="success-title" id="successTitle">¡Pedido registrado!</h1>
+      <p class="success-subtitle" id="successSubtitle">
         Tu pedido fue recibido y está siendo procesado.<br>
         Recibirás un email de confirmación a la brevedad.
       </p>
@@ -32,12 +32,25 @@
         N.° de orden: <strong id="orderNum">—</strong>
       </div>
 
-      <div class="next-steps">
+      <!-- Transfer-specific instructions -->
+      <div id="transferInstructions" style="display:none;margin:20px 0;padding:16px;background:var(--bg-alt);border-radius:12px;border:1.5px solid var(--border);text-align:left">
+        <p style="font-weight:600;margin-bottom:12px">Datos para la transferencia:</p>
+        <div style="display:grid;gap:6px;font-size:.875rem">
+          <div style="display:flex;justify-content:space-between"><span style="color:var(--text-muted)">Banco:</span> <strong>Banco Galicia</strong></div>
+          <div style="display:flex;justify-content:space-between"><span style="color:var(--text-muted)">Titular:</span> <strong>iPlace S.R.L.</strong></div>
+          <div style="display:flex;justify-content:space-between"><span style="color:var(--text-muted)">CBU:</span> <strong>0070023820000000123456</strong></div>
+          <div style="display:flex;justify-content:space-between"><span style="color:var(--text-muted)">Alias:</span> <strong>IPLACE.TIENDA</strong></div>
+          <div style="display:flex;justify-content:space-between"><span style="color:var(--text-muted)">CUIT:</span> <strong>30-71234567-8</strong></div>
+        </div>
+        <p style="margin-top:12px;font-size:.8rem;color:var(--text-muted)">Enviá el comprobante a <strong>pagos@iplace.com</strong> indicando tu número de pedido. Procesamos en 1–2 horas hábiles.</p>
+      </div>
+
+      <div class="next-steps" id="nextSteps">
         <div class="next-steps-title">¿Qué pasa ahora?</div>
 
         <div class="next-step-item">
           <div class="next-step-num">1</div>
-          <div class="next-step-text">
+          <div class="next-step-text" id="step1text">
             <strong>Confirmación por email</strong>
             Te enviamos los detalles del pedido a tu correo en los próximos minutos.
           </div>
@@ -62,7 +75,7 @@
 
       <div class="success-actions">
         <a href="../index.html" class="btn btn-primary">Volver al inicio</a>
-        <a href="../Productos/index.html" class="btn btn-ghost">Seguir comprando</a>
+        <a href="../Pedido/index.html" class="btn btn-ghost" id="trackOrderBtn">Seguir mi pedido</a>
       </div>
 
       <div class="success-trust">
@@ -81,16 +94,45 @@
 
     Cart.clear();
 
-    // Generate order number for display
-    const orderNum = 'IPL-' + Date.now().toString(36).toUpperCase().slice(-8);
-    document.getElementById('orderNum').textContent = orderNum;
+    const params = new URLSearchParams(window.location.search);
+    const method = params.get('method');
+    const orderFromUrl = params.get('order');
 
-    // Mark the order as paid in Firestore
+    // Use order ID from URL if present (transfer flow), otherwise generate display ID
     const pendingOrderId = localStorage.getItem('iplace_pending_order');
-    if (pendingOrderId) {
+    const displayId = orderFromUrl
+      ? `IPL-${orderFromUrl}`
+      : pendingOrderId
+        ? `IPL-${pendingOrderId.slice(-8).toUpperCase()}`
+        : 'IPL-' + Date.now().toString(36).toUpperCase().slice(-8);
+
+    document.getElementById('orderNum').textContent = displayId;
+
+    // Customize content for bank transfer
+    if (method === 'transfer') {
+      document.getElementById('successIcon').textContent = '🏦';
+      document.getElementById('successTitle').textContent = '¡Pedido registrado!';
+      document.getElementById('successSubtitle').innerHTML =
+        'Tu pedido fue registrado correctamente.<br>Realizá la transferencia para que podamos procesarlo.';
+      document.getElementById('transferInstructions').style.display = '';
+      document.getElementById('step1text').innerHTML =
+        '<strong>Enviá el comprobante</strong> Una vez realizada la transferencia, enviá el comprobante a <strong>pagos@iplace.com</strong> con tu número de pedido.';
+    }
+
+    // Mark the order as paid in Firestore (only for MercadoPago flow)
+    if (pendingOrderId && method !== 'transfer') {
       updateDoc(doc(db, 'orders', pendingOrderId), { status: 'paid' })
         .catch(err => console.error('Error updating order status:', err));
+    }
+    if (pendingOrderId) {
       localStorage.removeItem('iplace_pending_order');
+    }
+
+    // Link to tracking page with order ID pre-filled
+    const trackBtn = document.getElementById('trackOrderBtn');
+    if (trackBtn && displayId) {
+      const shortId = displayId.replace('IPL-', '');
+      trackBtn.href = `../Pedido/index.html?order=${shortId}`;
     }
   </script>
 </body>

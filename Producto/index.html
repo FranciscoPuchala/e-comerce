@@ -16,6 +16,7 @@
   <link rel="stylesheet" href="../css/header.css">
 </head>
 <body>
+<a href="#main-content" class="skip-nav">Saltar al contenido</a>
 
 <header class="site-header" id="header">
   <div class="header-top-line"></div>
@@ -57,7 +58,7 @@
   </nav>
 </header>
 
-  <main>
+  <main id="main-content">
     <div id="productNotFound" style="display:none" class="status-page">
       <div class="status-icon">🔍</div>
       <h2>Producto no encontrado</h2>
@@ -116,6 +117,7 @@
                   <a href="../Carrito/index.html" class="btn btn-secondary btn-lg" id="buyNowBtn">
                     Comprar ahora
                   </a>
+                  <button class="btn btn-ghost btn-lg" id="wishlistBtn" aria-label="Agregar a favoritos" title="Agregar a favoritos" style="padding:0 16px;font-size:1.2rem">♡</button>
                 </div>
                 <div style="display:flex;gap:20px;margin-top:16px;font-size:0.8rem;color:var(--text-muted)">
                   <span>🚚 Envío gratis</span>
@@ -126,6 +128,50 @@
             </div>
           </div>
 
+        </div>
+      </section>
+
+      <!-- Reviews -->
+      <section class="section">
+        <div class="container">
+          <div style="max-width:760px;margin:0 auto">
+            <h2 class="section-title reveal" style="margin-bottom:28px">Reseñas de clientes</h2>
+
+            <!-- Reviews list -->
+            <div id="reviewsList">
+              <p style="color:var(--text-muted);font-size:.9rem;text-align:center;padding:24px">Cargando reseñas...</p>
+            </div>
+
+            <!-- Review form -->
+            <div id="reviewFormSection" style="margin-top:32px;padding:24px;background:var(--bg-alt);border:1.5px solid var(--border);border-radius:var(--radius)">
+              <h3 style="font-size:1rem;font-weight:700;margin-bottom:16px" id="reviewFormTitle">Escribir una reseña</h3>
+              <div id="reviewLoginMsg" style="display:none;font-size:.875rem;color:var(--text-muted);text-align:center;padding:16px">
+                <a href="../Cuenta/index.html" style="color:var(--accent)">Iniciá sesión</a> para dejar una reseña.
+              </div>
+              <div id="reviewForm" style="display:none">
+                <div style="margin-bottom:16px">
+                  <label style="font-size:.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:6px">Tu puntuación *</label>
+                  <div class="star-selector" id="starSelector" role="group" aria-label="Puntuación">
+                    <button type="button" class="star-btn" data-star="1" aria-label="1 estrella">★</button>
+                    <button type="button" class="star-btn" data-star="2" aria-label="2 estrellas">★</button>
+                    <button type="button" class="star-btn" data-star="3" aria-label="3 estrellas">★</button>
+                    <button type="button" class="star-btn" data-star="4" aria-label="4 estrellas">★</button>
+                    <button type="button" class="star-btn" data-star="5" aria-label="5 estrellas">★</button>
+                  </div>
+                </div>
+                <div style="margin-bottom:16px">
+                  <label for="reviewTitle" style="font-size:.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:6px">Título *</label>
+                  <input type="text" id="reviewTitle" class="form-input" placeholder="Resumen en una frase" maxlength="80">
+                </div>
+                <div style="margin-bottom:16px">
+                  <label for="reviewBody" style="font-size:.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:6px">Comentario *</label>
+                  <textarea id="reviewBody" class="form-input" rows="4" placeholder="Contá tu experiencia con el producto..." maxlength="500" style="resize:vertical"></textarea>
+                </div>
+                <p id="reviewFormError" style="font-size:.8rem;color:var(--error);margin-bottom:8px;display:none"></p>
+                <button class="btn btn-primary" id="submitReviewBtn">Publicar reseña</button>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -155,7 +201,9 @@
       </div>
       <div class="footer-col">
         <h5>Legal</h5>
-        <a href="#">Privacidad</a>
+        <a href="../legal.html#privacidad">Privacidad</a>
+        <a href="../legal.html#terminos">Términos</a>
+        <a href="../legal.html#devoluciones">Devoluciones</a>
       </div>
     </div>
     <div class="footer-bottom">

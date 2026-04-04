@@ -16,6 +16,7 @@
   <link rel="stylesheet" href="../css/header.css">
 </head>
 <body>
+<a href="#main-content" class="skip-nav">Saltar al contenido</a>
 
 <div class="announcement-bar" id="announcementBar">
   <div class="announcement-bar-inner">
@@ -66,7 +67,7 @@
   </nav>
 </header>
 
-  <main>
+  <main id="main-content">
     <section class="page-hero">
       <div class="container">
         <h1>Todos los productos</h1>
@@ -76,6 +77,28 @@
 
     <section class="section">
       <div class="container">
+        <nav class="breadcrumb" aria-label="Navegación">
+          <a href="../index.html">Inicio</a>
+          <span class="breadcrumb-sep">›</span>
+          <span class="bc-current">Productos</span>
+        </nav>
+
+        <!-- Search bar -->
+        <div class="search-bar-wrap">
+          <div class="search-bar">
+            <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <input
+              type="search"
+              id="searchInput"
+              class="search-input"
+              placeholder="Buscar productos..."
+              aria-label="Buscar productos"
+              autocomplete="off"
+            >
+            <button class="search-clear" id="searchClear" aria-label="Limpiar búsqueda" style="display:none">✕</button>
+          </div>
+        </div>
+
         <!-- Category filter -->
         <div class="category-filter" id="categoryFilter" role="group" aria-label="Filtrar por categoría">
           <!-- Rendered by JS -->
@@ -132,12 +155,12 @@
       <div class="footer-col">
         <h5>Soporte</h5>
         <a href="../Contacto/index.html">Contacto</a>
-        <a href="#">Devoluciones</a>
+        <a href="../legal.html#devoluciones">Devoluciones</a>
       </div>
       <div class="footer-col">
         <h5>Legal</h5>
-        <a href="#">Privacidad</a>
-        <a href="#">Términos</a>
+        <a href="../legal.html#privacidad">Privacidad</a>
+        <a href="../legal.html#terminos">Términos</a>
       </div>
     </div>
     <div class="footer-bottom">

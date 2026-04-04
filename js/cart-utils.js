@@ -162,6 +162,16 @@ export function initHeader() {
       if (!hamburger.contains(e.target) && !navLinks.contains(e.target)) {
         navLinks.classList.remove('open');
         hamburger.classList.remove('open');
+        hamburger.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    // Close menu when a nav link is clicked
+    navLinks.addEventListener('click', (e) => {
+      if (e.target.closest('a')) {
+        navLinks.classList.remove('open');
+        hamburger.classList.remove('open');
+        hamburger.setAttribute('aria-expanded', 'false');
       }
     });
   }
@@ -182,3 +192,25 @@ export function initHeader() {
 window.addEventListener('storage', (e) => {
   if (e.key === CART_KEY) updateCartBadge();
 });
+
+// ---- Wishlist (localStorage) ----
+const WISH_KEY = 'iplace_wishlist';
+
+export const Wishlist = {
+  get() {
+    try { return JSON.parse(localStorage.getItem(WISH_KEY) ?? '[]'); } catch { return []; }
+  },
+  has(id) {
+    return this.get().includes(String(id));
+  },
+  toggle(id) {
+    const list = this.get();
+    const sid = String(id);
+    const idx = list.indexOf(sid);
+    if (idx === -1) { list.push(sid); } else { list.splice(idx, 1); }
+    localStorage.setItem(WISH_KEY, JSON.stringify(list));
+    window.dispatchEvent(new CustomEvent('wishlist:updated'));
+    return idx === -1; // true = added
+  },
+  count() { return this.get().length; },
+};

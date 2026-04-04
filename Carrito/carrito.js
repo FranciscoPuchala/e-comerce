@@ -84,12 +84,24 @@ function initPromo() {
       appliedDiscount = result.discount;
       feedback.textContent = `✓ Código aplicado: ${result.percent}% de descuento`;
       feedback.classList.add('success');
+      input.classList.remove('error');
       input.disabled = true;
+      btn.textContent = 'Aplicado ✓';
       btn.disabled = true;
       updateSummary();
     } else {
-      feedback.textContent = 'Código no válido. Verificá que esté bien escrito.';
+      feedback.textContent = '✕ Código no válido. Verificá que esté bien escrito.';
       feedback.classList.add('error');
+      input.classList.add('error');
+      input.select();
+    }
+  });
+
+  input.addEventListener('input', () => {
+    input.classList.remove('error');
+    if (!input.disabled) {
+      feedback.textContent = '';
+      feedback.className = 'promo-feedback';
     }
   });
 

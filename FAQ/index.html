@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Preguntas frecuentes — iPlace</title>
+  <meta name="description" content="Respuestas a las preguntas más comunes sobre compras, envíos, pagos y garantías en iPlace.">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/header.css">
+  <style>
+    .faq-layout { max-width: 720px; margin: 0 auto; padding: 0 24px 80px; }
+    .faq-cats { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 36px; }
+    .faq-cat-btn { padding: 8px 20px; border-radius: var(--radius-full); font-size: .875rem; font-weight: 600; color: var(--text-muted); background: var(--bg-alt); border: 1.5px solid transparent; cursor: pointer; transition: all var(--t); }
+    .faq-cat-btn:hover { color: var(--text); background: var(--border-light); }
+    .faq-cat-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .faq-section { margin-bottom: 16px; }
+    .faq-section-title { font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--text-muted); margin-bottom: 12px; }
+    .faq-item { border: 1.5px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 8px; overflow: hidden; transition: border-color var(--t); }
+    .faq-item:hover { border-color: var(--accent); }
+    .faq-item.open { border-color: var(--accent); }
+    .faq-question { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; cursor: pointer; gap: 12px; }
+    .faq-question strong { font-size: .9rem; font-weight: 600; }
+    .faq-chevron { font-size: .85rem; transition: transform .25s; flex-shrink: 0; color: var(--text-muted); }
+    .faq-item.open .faq-chevron { transform: rotate(180deg); color: var(--accent); }
+    .faq-answer { max-height: 0; overflow: hidden; transition: max-height .3s ease; }
+    .faq-item.open .faq-answer { max-height: 400px; }
+    .faq-answer-inner { padding: 0 20px 18px; font-size: .875rem; color: var(--text-muted); line-height: 1.7; }
+    .faq-answer-inner a { color: var(--accent); }
+    .faq-contact { background: var(--bg-alt); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 28px 32px; text-align: center; margin-top: 40px; }
+    .faq-contact h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 8px; }
+    .faq-contact p { font-size: .875rem; color: var(--text-muted); margin-bottom: 20px; }
+    .faq-contact .btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    [data-cat] { display: none; }
+    [data-cat].visible { display: block; }
+  </style>
+</head>
+<body>
+<a href="#main-content" class="skip-nav">Saltar al contenido</a>
+
+<header class="site-header" id="header">
+  <div class="header-top-line"></div>
+  <div class="header-accent-line"></div>
+  <div class="header-orb header-orb-1"></div>
+  <div class="header-orb header-orb-2"></div>
+  <nav class="nav-container">
+    <div class="logo-wrap"><a href="../index.html" class="logo">iPlace</a></div>
+    <ul class="nav-links" id="navLinks">
+      <div class="nav-pill" id="navPill"></div>
+      <li class="nav-item"><a href="../index.html">Inicio</a></li>
+      <li class="nav-item"><a href="../Productos/index.html">Productos</a></li>
+      <li class="nav-item"><a href="../Contacto/index.html">Contacto</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="../Carrito/index.html" class="cart-btn" aria-label="Ver carrito">
+        <span class="cart-shimmer"></span>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        Carrito <span class="cart-count hidden" id="cartCount">0</span>
+      </a>
+      <button class="hamburger" id="hamburger" aria-label="Menú" aria-expanded="false"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+</header>
+
+<main id="main-content">
+  <section class="page-hero">
+    <div class="container">
+      <h1>Preguntas frecuentes</h1>
+      <p>Todo lo que necesitás saber antes y después de tu compra.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="faq-layout">
+
+      <nav class="breadcrumb" aria-label="Navegación">
+        <a href="../index.html">Inicio</a>
+        <span class="breadcrumb-sep">›</span>
+        <span class="bc-current">FAQ</span>
+      </nav>
+
+      <!-- Category tabs -->
+      <div class="faq-cats" role="group" aria-label="Filtrar por tema">
+        <button class="faq-cat-btn active" data-filter="all">Todos</button>
+        <button class="faq-cat-btn" data-filter="compras">Compras</button>
+        <button class="faq-cat-btn" data-filter="envios">Envíos</button>
+        <button class="faq-cat-btn" data-filter="pagos">Pagos</button>
+        <button class="faq-cat-btn" data-filter="garantia">Garantía</button>
+        <button class="faq-cat-btn" data-filter="devoluciones">Devoluciones</button>
+      </div>
+
+      <!-- Compras -->
+      <div class="faq-section" data-cat="compras">
+        <div class="faq-section-title">Compras</div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <strong>¿Los productos son originales y nuevos?</strong>
+            <span class="faq-chevron">▾</span>
+          </div>
+          <div class="faq-answer"><div class="faq-answer-inner">
+            Sí, todos los productos que vendemos son 100% originales Apple, nuevos y en caja sellada. Somos distribuidores oficiales y compramos directamente a Apple Argentina. Cada producto incluye su factura y garantía oficial de fábrica.
+          </div></div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <strong>¿Cómo hago un pedido?</strong>
+            <span class="faq-chevron">▾</span>
+          </div>
+          <div class="faq-answer"><div class="faq-answer-inner">
+            Es muy simple: elegí el producto, hacé click en "Agregar al carrito", y luego en "Finalizar compra". Completás tus datos y elegís el método de pago. Todo el proceso tarda menos de 5 minutos.
+          </div></div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <strong>¿Puedo modificar o cancelar mi pedido?</strong>
+            <span class="faq-chevron">▾</span>
+          </div>
+          <div class="faq-answer"><div class="faq-answer-inner">
+            Podés cancelar tu pedido dentro de las 2 horas posteriores a la compra escribiéndonos a <a href="mailto:soporte@iplace.com">soporte@iplace.com</a> o por WhatsApp. Una vez que el pedido entra en preparación, no es posible modificarlo.
+          </div></div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <strong>¿Puedo comprar sin crear una cuenta?</strong>
+            <span class="faq-chevron">▾</span>
+          </div>
+          <div class="faq-answer"><div class="faq-answer-inner">
+            Sí, podés comprar como invitado sin necesidad de registrarte. Sin embargo, si creás una cuenta podés ver tu historial de pedidos, seguir el estado de tus envíos y guardar tu dirección para futuras compras.
+          </div></div>
+        </div>
+      </div>
+
+      <!-- Envíos -->
+      <div class="faq-section" data-cat="envios">
+        <div class="faq-section-title">Envíos</div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <strong>¿Cuánto tarda el envío?</strong>
+            <span class="faq-chevron">▾</span>
+          </div>
+          <div class="faq-answer"><div class="faq-answer-inner">
+            El envío estándar tarda entre 24 y 48 horas hábiles una vez confirmado el pago. Para zonas del interior del país puede demorar hasta 5 días hábiles dependiendo de la localidad.
+          </div></div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <strong>¿El envío tiene costo?</strong>
+            <span class="faq-chevron">▾</span>
+          </div>
+          <div class="faq-answer"><div class="faq-answer-inner">
+            El envío es <strong>gratuito</strong> en todos los pedidos, sin mínimo de compra. No importa si comprás un accesorio de $5.000 o un MacBook Pro.
+          </div></div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <strong>¿Cómo hago el seguimiento de mi envío?</strong>
+            <span class="faq-chevron">▾</span>
+          </div>
+          <div class="faq-answer"><div class="faq-answer-inner">
+            Una vez despachado tu pedido, podés seguir el estado en nuestra <a href="../Pedido/index.html">página de seguimiento</a> ingresando tu número de pedido (ej: IPL-XXXXXXXX). También recibirás un email cuando tu pedido sea enviado.
+          </div></div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <strong>¿Hacen envíos al interior del país?</strong>
+            <span class="faq-chevron">▾</span>
+          </div>
+          <div class="faq-answer"><div class="faq-answer-inner">
+            Sí, hacemos envíos a todo el territorio argentino a través de Andreani y OCA. Para Tierra del Fuego el tiempo de entrega puede extenderse hasta 7 días hábiles.
+          </div></div>
+        </div>
+      </div>
+
+      <!-- Pagos -->
+      <div class="faq-section" data-cat="pagos">
+        <div class="faq-section-title">Pagos</div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <strong>¿Qué métodos de pago aceptan?</strong>
+            <span class="faq-chevron">▾</span>
+          </div>
+          <div class="faq-answer"><div class="faq-answer-inner">
+            Aceptamos tarjetas de crédito y débito (todas las redes), pagos en efectivo (Rapipago, Pago Fácil) y transferencia bancaria a través de MercadoPago. También podés pagar con la billetera de MercadoPago.
+          </div></div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <strong>¿Tienen cuotas sin interés?</strong>
+            <span class="faq-chevron">▾</span>
+          </div>
+          <div class="faq-answer"><div class="faq-answer-inner">
+            Sí, ofrecemos hasta 12 cuotas sin interés con tarjetas de crédito de los principales bancos. La opción de cuotas se muestra al momento de pagar en MercadoPago según tu tarjeta y banco.
+          </div></div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <strong>¿Es seguro pagar en iPlace?</strong>
+            <span class="faq-chevron">▾</span>
+          </div>
+          <div class="faq-answer"><div class="faq-answer-inner">
+            Totalmente. Usamos MercadoPago como plataforma de pago, uno de los procesadores más seguros de América Latina. Nunca almacenamos los datos de tu tarjeta. Toda la comunicación está encriptada con SSL.
+          </div></div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <strong>¿Cuánto tiempo tarda en procesarse la transferencia bancaria?</strong>
+            <span class="faq-chevron">▾</span>
+          </div>
+          <div class="faq-answer"><div class="faq-answer-inner">
+            Una vez que enviás el comprobante a <a href="mailto:pagos@iplace.com">pagos@iplace.com</a>, verificamos el pago en 1-2 horas hábiles. Luego tu pedido entra automáticamente en preparación.
+          </div></div>
+        </div>
+      </div>
+
+      <!-- Garantía -->
+      <div class="faq-section" data-cat="garantia">
+        <div class="faq-section-title">Garantía</div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <strong>¿Qué garantía tienen los productos?</strong>
+            <span class="faq-chevron">▾</span>
+          </div>
+          <div class="faq-answer"><div class="faq-answer-inner">
+            Todos los productos cuentan con <strong>12 meses de garantía oficial Apple</strong>. Adicionalmente, en Argentina aplica la Ley de Defensa del Consumidor que otorga 6 meses adicionales de garantía legal.
+          </div></div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <strong>¿Cómo activo la garantía Apple?</strong>
+            <span class="faq-chevron">▾</span>
+          </div>
+          <div class="faq-answer"><div class="faq-answer-inner">
+            La garantía Apple se activa automáticamente con el número de serie del equipo. Podés verificar la cobertura en <a href="https://checkcoverage.apple.com" target="_blank" rel="noopener">checkcoverage.apple.com</a>. También podés registrar el producto en tu Apple ID para mayor seguimiento.
+          </div></div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <strong>¿Qué cubre y qué no cubre la garantía?</strong>
+            <span class="faq-chevron">▾</span>
+          </div>
+          <div class="faq-answer"><div class="faq-answer-inner">
+            La garantía cubre defectos de fabricación y fallas del hardware. <strong>No cubre</strong>: daños por caída, agua, mal uso, modificaciones no autorizadas o batería desgastada por uso normal. Para cobertura ampliada podés adquirir AppleCare+.
+          </div></div>
+        </div>
+      </div>
+
+      <!-- Devoluciones -->
+      <div class="faq-section" data-cat="devoluciones">
+        <div class="faq-section-title">Devoluciones</div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <strong>¿Puedo devolver un producto?</strong>
+            <span class="faq-chevron">▾</span>
+          </div>
+          <div class="faq-answer"><div class="faq-answer-inner">
+            Sí, tenemos una política de devoluciones de 30 días sin preguntas. El producto debe estar en su estado original, sin uso y con todos sus accesorios y embalaje. Para iniciar una devolución escribinos a <a href="mailto:soporte@iplace.com">soporte@iplace.com</a>.
+          </div></div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <strong>¿El envío de la devolución tiene costo?</strong>
+            <span class="faq-chevron">▾</span>
+          </div>
+          <div class="faq-answer"><div class="faq-answer-inner">
+            Si la devolución es por un defecto de fábrica o un error nuestro, el costo del envío corre por nuestra cuenta. Si la devolución es por arrepentimiento de compra, el costo del envío de retorno está a cargo del comprador.
+          </div></div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            <strong>¿Cuándo recibo el reembolso?</strong>
+            <span class="faq-chevron">▾</span>
+          </div>
+          <div class="faq-answer"><div class="faq-answer-inner">
+            Una vez que recibimos y verificamos el producto devuelto, procesamos el reembolso dentro de 3-5 días hábiles. Si pagaste con tarjeta de crédito, el acreditado puede demorar hasta 2 ciclos de facturación según tu banco.
+          </div></div>
+        </div>
+      </div>
+
+      <!-- Contact CTA -->
+      <div class="faq-contact">
+        <h3>¿No encontraste lo que buscabas?</h3>
+        <p>Nuestro equipo de soporte está disponible de lunes a sábado de 9 a 18 hs.</p>
+        <div class="btns">
+          <a href="../Contacto/index.html" class="btn btn-primary">Escribirnos</a>
+          <a href="https://wa.me/5491112345678" class="btn btn-ghost" target="_blank" rel="noopener">💬 WhatsApp</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="logo">iPlace</div>
+      <p>Tu distribuidor oficial Apple.</p>
+    </div>
+    <div class="footer-col">
+      <h5>Tienda</h5>
+      <a href="../Productos/index.html">Productos</a>
+    </div>
+    <div class="footer-col">
+      <h5>Soporte</h5>
+      <a href="../Contacto/index.html">Contacto</a>
+      <a href="index.html">Preguntas frecuentes</a>
+      <a href="../Pedido/index.html">Seguir mi pedido</a>
+    </div>
+    <div class="footer-col">
+      <h5>Legal</h5>
+      <a href="../legal.html#privacidad">Privacidad</a>
+      <a href="../legal.html#terminos">Términos</a>
+      <a href="../legal.html#devoluciones">Devoluciones</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 iPlace. Todos los derechos reservados.</span>
+  </div>
+</footer>
+
+<div class="notification" id="toastContainer" aria-live="polite"></div>
+
+<script type="module">
+  import { updateCartBadge, initHeader } from '../js/cart-utils.js';
+  initHeader();
+  updateCartBadge();
+</script>
+<script>
+  // FAQ accordion
+  document.querySelectorAll('.faq-item').forEach(item => {
+    item.querySelector('.faq-question').addEventListener('click', () => {
+      const wasOpen = item.classList.contains('open');
+      // Close all
+      document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+      if (!wasOpen) item.classList.add('open');
+    });
+  });
+
+  // Category filter
+  const allCats = document.querySelectorAll('[data-cat]');
+  function showAll() { allCats.forEach(s => s.classList.add('visible')); }
+  showAll();
+
+  document.querySelectorAll('.faq-cat-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.faq-cat-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const filter = btn.dataset.filter;
+      if (filter === 'all') {
+        showAll();
+      } else {
+        allCats.forEach(s => {
+          s.classList.toggle('visible', s.dataset.cat === filter);
+        });
+      }
+    });
+  });
+
+  // Nav pill
+  (function(){
+    var nav=document.getElementById('navLinks'); var pill=document.getElementById('navPill');
+    if(!nav||!pill) return;
+    var items=nav.querySelectorAll('.nav-item > a');
+    function move(el){ var nr=nav.getBoundingClientRect(),lr=el.getBoundingClientRect(); pill.style.left=(lr.left-nr.left)+'px'; pill.style.width=lr.width+'px'; }
+    items.forEach(function(a){ a.addEventListener('mouseenter',function(){move(a);}); });
+    nav.addEventListener('mouseleave',function(){ pill.style.opacity='0'; });
+    nav.addEventListener('mouseenter',function(){ pill.style.opacity='1'; });
+  })();
+  (function(){
+    var h=document.getElementById('header'); if(!h) return; var raf=null;
+    h.addEventListener('mouseenter',function(){h.classList.add('spotlight-active');});
+    h.addEventListener('mouseleave',function(){h.classList.remove('spotlight-active');});
+    h.addEventListener('mousemove',function(e){ if(raf) cancelAnimationFrame(raf); raf=requestAnimationFrame(function(){ var r=h.getBoundingClientRect(); h.style.setProperty('--mx',(e.clientX-r.left)+'px'); h.style.setProperty('--my',(e.clientY-r.top)+'px'); }); });
+  })();
+</script>
+</body>
+</html>

@@ -45,10 +45,14 @@ function renderSummary() {
 
 // ---- Payment method toggle ----
 function initPaymentToggle() {
+  const bankDetails = document.getElementById('bankDetails');
   document.querySelectorAll('input[name="payment"]').forEach(radio => {
     radio.addEventListener('change', () => {
       document.querySelectorAll('.payment-option').forEach(opt =>
         opt.classList.toggle('selected', opt.querySelector('input').checked));
+      if (bankDetails) {
+        bankDetails.style.display = radio.value === 'transfer' && radio.checked ? '' : 'none';
+      }
     });
   });
 }
@@ -156,17 +160,12 @@ async function createMercadoPagoPreference(orderId, formData) {
 
 // ---- Handle bank transfer ----
 function handleBankTransfer(orderId) {
-  showToast('Te enviaremos los datos bancarios por email.', 'success');
-  const msg = document.getElementById('payStatus');
-  msg.innerHTML = `
-    <strong>Pedido #${orderId.slice(-8).toUpperCase()}</strong> registrado.<br>
-    Recibirás los datos de transferencia en tu email.
-    <br><br>
-    <a href="../index.html" class="btn btn-ghost btn-sm" style="margin-top:8px">Volver al inicio</a>
-  `;
-  msg.style.color = 'var(--success)';
+  const shortId = orderId.slice(-8).toUpperCase();
+  showToast(`Pedido #${shortId} registrado`, 'success');
+  localStorage.setItem('iplace_pending_order', orderId);
   Cart.clear();
   updateCartBadge();
+  window.location.href = `success.html?method=transfer&order=${shortId}`;
 }
 
 // ---- Main pay handler ----

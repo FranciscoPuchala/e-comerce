@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Seguimiento de pedido — iPlace</title>
+  <meta name="description" content="Consultá el estado de tu pedido en iPlace.">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/header.css">
+  <style>
+    .tracking-layout { max-width: 680px; margin: 0 auto; padding: 0 24px 80px; }
+    .tracking-search { background: var(--bg-alt); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 32px; margin-bottom: 32px; }
+    .tracking-search h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: 6px; }
+    .tracking-search p { font-size: .875rem; color: var(--text-muted); margin-bottom: 20px; }
+    .tracking-form { display: flex; gap: 10px; }
+    .tracking-input { flex: 1; padding: 11px 16px; border: 1.5px solid var(--border); border-radius: var(--radius-sm); background: var(--bg); color: var(--text); font-size: .9rem; outline: none; transition: border-color var(--t), box-shadow var(--t); }
+    .tracking-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(var(--accent-rgb), .12); }
+    #trackingResult { display: none; }
+    .order-card { background: var(--bg-alt); border: 1.5px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+    .order-card-header { padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+    .order-card-header h3 { font-size: 1rem; font-weight: 700; margin: 0; }
+    .order-date { font-size: .8rem; color: var(--text-muted); }
+    .status-badge { display: inline-flex; align-items: center; gap: 6px; padding: 5px 14px; border-radius: var(--radius-full); font-size: .8rem; font-weight: 600; }
+    .status-pending   { background: rgba(255,159,10,.12); color: #ff9f0a; border: 1px solid rgba(255,159,10,.25); }
+    .status-paid      { background: rgba(52,199,89,.12);  color: #34c759; border: 1px solid rgba(52,199,89,.25); }
+    .status-preparing { background: rgba(10,132,255,.12); color: #0a84ff; border: 1px solid rgba(10,132,255,.25); }
+    .status-shipped   { background: rgba(94,92,230,.12);  color: #5e5ce6; border: 1px solid rgba(94,92,230,.25); }
+    .status-delivered { background: rgba(52,199,89,.15);  color: #30d158; border: 1px solid rgba(52,199,89,.3); }
+    .status-cancelled { background: rgba(255,69,58,.10);  color: #ff453a; border: 1px solid rgba(255,69,58,.2); }
+    .order-items { padding: 16px 24px; display: grid; gap: 12px; }
+    .order-item { display: flex; gap: 14px; align-items: center; }
+    .order-item img { width: 56px; height: 56px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border); }
+    .order-item-info { flex: 1; }
+    .order-item-name { font-size: .9rem; font-weight: 600; }
+    .order-item-qty { font-size: .8rem; color: var(--text-muted); }
+    .order-item-price { font-size: .9rem; font-weight: 600; }
+    .order-totals { padding: 16px 24px; border-top: 1px solid var(--border); display: grid; gap: 8px; }
+    .order-total-row { display: flex; justify-content: space-between; font-size: .875rem; color: var(--text-muted); }
+    .order-total-row.total { font-size: 1rem; font-weight: 700; color: var(--text); border-top: 1px solid var(--border); padding-top: 10px; margin-top: 2px; }
+    .timeline { padding: 24px; border-top: 1px solid var(--border); }
+    .timeline h4 { font-size: .875rem; font-weight: 700; margin-bottom: 20px; color: var(--text-muted); text-transform: uppercase; letter-spacing: .05em; }
+    .timeline-steps { display: grid; gap: 0; }
+    .timeline-step { display: flex; gap: 16px; padding-bottom: 20px; position: relative; }
+    .timeline-step:last-child { padding-bottom: 0; }
+    .timeline-dot { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: .75rem; flex-shrink: 0; margin-top: 2px; }
+    .timeline-dot.done   { background: var(--accent); color: #fff; }
+    .timeline-dot.active { background: rgba(var(--accent-rgb), .15); color: var(--accent); border: 2px solid var(--accent); }
+    .timeline-dot.pending { background: var(--bg); color: var(--text-muted); border: 2px solid var(--border); }
+    .timeline-step:not(:last-child) .timeline-dot::after { content: ''; position: absolute; left: 13px; top: 30px; width: 2px; height: calc(100% - 10px); background: var(--border); }
+    .timeline-step.done .timeline-dot::after { background: var(--accent); }
+    .timeline-info strong { font-size: .875rem; display: block; margin-bottom: 2px; }
+    .timeline-info span { font-size: .8rem; color: var(--text-muted); }
+    .tracking-error { text-align: center; padding: 40px 20px; }
+    .tracking-error .err-icon { font-size: 3rem; margin-bottom: 16px; }
+    .tracking-error h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; }
+    .tracking-error p { font-size: .875rem; color: var(--text-muted); }
+  </style>
+</head>
+<body>
+
+<header class="site-header" id="header">
+  <div class="header-top-line"></div>
+  <div class="header-accent-line"></div>
+  <div class="header-orb header-orb-1"></div>
+  <div class="header-orb header-orb-2"></div>
+  <nav class="nav-container">
+    <div class="logo-wrap"><a href="../index.html" class="logo">iPlace</a></div>
+    <ul class="nav-links" id="navLinks">
+      <div class="nav-pill" id="navPill"></div>
+      <li class="nav-item"><a href="../index.html">Inicio</a></li>
+      <li class="nav-item"><a href="../Productos/index.html">Productos</a></li>
+      <li class="nav-item"><a href="../Contacto/index.html">Contacto</a></li>
+    </ul>
+    <div class="nav-actions">
+      <a href="../Carrito/index.html" class="cart-btn" aria-label="Ver carrito">
+        <span class="cart-shimmer"></span>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        Carrito <span class="cart-count hidden" id="cartCount">0</span>
+      </a>
+      <button class="hamburger" id="hamburger" aria-label="Menú" aria-expanded="false"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+</header>
+
+<main>
+  <section class="page-hero">
+    <div class="container">
+      <h1>Seguimiento de pedido</h1>
+      <p>Ingresá tu número de pedido para ver el estado de tu compra.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="tracking-layout">
+
+      <nav class="breadcrumb" aria-label="Navegación">
+        <a href="../index.html">Inicio</a>
+        <span class="breadcrumb-sep">›</span>
+        <span class="bc-current">Seguimiento</span>
+      </nav>
+
+      <div class="tracking-search">
+        <h2>Consultá tu pedido</h2>
+        <p>Ingresá el número de pedido que recibiste al finalizar tu compra (ej: IPL-AB12CD34).</p>
+        <div class="tracking-form">
+          <input
+            type="text"
+            id="orderIdInput"
+            class="tracking-input"
+            placeholder="IPL-XXXXXXXX"
+            aria-label="Número de pedido"
+            autocomplete="off"
+          >
+          <button class="btn btn-primary" id="trackBtn">Consultar</button>
+        </div>
+        <p id="trackError" style="font-size:.8rem;color:var(--error);margin-top:10px;display:none"></p>
+      </div>
+
+      <div id="trackingResult"></div>
+
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="logo">iPlace</div>
+      <p>Tu distribuidor oficial Apple.</p>
+    </div>
+    <div class="footer-col">
+      <h5>Tienda</h5>
+      <a href="../Productos/index.html">Productos</a>
+    </div>
+    <div class="footer-col">
+      <h5>Soporte</h5>
+      <a href="../Contacto/index.html">Contacto</a>
+    </div>
+    <div class="footer-col">
+      <h5>Legal</h5>
+      <a href="../legal.html#privacidad">Privacidad</a>
+      <a href="../legal.html#terminos">Términos</a>
+      <a href="../legal.html#devoluciones">Devoluciones</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 iPlace. Todos los derechos reservados.</span>
+  </div>
+</footer>
+
+<div class="notification" id="toastContainer" aria-live="polite"></div>
+
+<script type="module">
+  import { updateCartBadge, initHeader, formatPrice } from '../js/cart-utils.js';
+  import { db } from '../js/firebase-config.js';
+  import { collection, query, where, getDocs, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+  initHeader();
+  updateCartBadge();
+
+  const STATUS_MAP = {
+    pending:   { label: 'Pendiente de pago',   cls: 'status-pending',   icon: '⏳' },
+    paid:      { label: 'Pago confirmado',      cls: 'status-paid',      icon: '✓'  },
+    preparing: { label: 'En preparación',       cls: 'status-preparing', icon: '📦' },
+    shipped:   { label: 'En camino',            cls: 'status-shipped',   icon: '🚚' },
+    delivered: { label: 'Entregado',            cls: 'status-delivered', icon: '🎉' },
+    cancelled: { label: 'Cancelado',            cls: 'status-cancelled', icon: '✕'  },
+  };
+
+  const TIMELINE_STEPS = [
+    { key: 'pending',   label: 'Pedido recibido',     desc: 'Tu pedido fue registrado en nuestro sistema.' },
+    { key: 'paid',      label: 'Pago confirmado',      desc: 'Verificamos la recepción de tu pago.' },
+    { key: 'preparing', label: 'En preparación',       desc: 'Nuestro equipo está preparando tu paquete.' },
+    { key: 'shipped',   label: 'Enviado',              desc: 'Tu pedido está en camino con el correo.' },
+    { key: 'delivered', label: 'Entregado',            desc: '¡Tu pedido llegó a destino!' },
+  ];
+
+  const ORDER_PROGRESS = {
+    pending: 0, paid: 1, preparing: 2, shipped: 3, delivered: 4, cancelled: -1,
+  };
+
+  function buildTimeline(status) {
+    const currentStep = ORDER_PROGRESS[status] ?? 0;
+    if (status === 'cancelled') {
+      return `<div class="timeline"><h4>Historial</h4><p style="color:var(--error);font-size:.875rem">Este pedido fue cancelado.</p></div>`;
+    }
+    const steps = TIMELINE_STEPS.map((step, i) => {
+      const dotClass = i < currentStep ? 'done' : i === currentStep ? 'active' : 'pending';
+      const icon = i < currentStep ? '✓' : i + 1;
+      return `
+        <div class="timeline-step ${i < currentStep ? 'done' : ''}">
+          <div class="timeline-dot ${dotClass}">${icon}</div>
+          <div class="timeline-info">
+            <strong>${step.label}</strong>
+            <span>${step.desc}</span>
+          </div>
+        </div>`;
+    }).join('');
+    return `<div class="timeline"><h4>Estado del pedido</h4><div class="timeline-steps">${steps}</div></div>`;
+  }
+
+  function renderOrder(order, orderId) {
+    const statusInfo = STATUS_MAP[order.status] ?? STATUS_MAP.pending;
+    const createdAt = order.createdAt?.toDate?.()
+      ? order.createdAt.toDate().toLocaleDateString('es-AR', { day: '2-digit', month: 'long', year: 'numeric' })
+      : 'Fecha no disponible';
+
+    const itemsHtml = (order.items ?? []).map(item => `
+      <div class="order-item">
+        <div class="order-item-info">
+          <div class="order-item-name">${item.name}</div>
+          <div class="order-item-qty">Cantidad: ${item.qty}</div>
+        </div>
+        <div class="order-item-price">${formatPrice(item.subtotal ?? item.price * item.qty)}</div>
+      </div>`).join('');
+
+    const paymentLabel = order.paymentMethod === 'transfer' ? 'Transferencia bancaria' : 'MercadoPago';
+    const displayId = `IPL-${orderId.slice(-8).toUpperCase()}`;
+
+    document.getElementById('trackingResult').style.display = '';
+    document.getElementById('trackingResult').innerHTML = `
+      <div class="order-card">
+        <div class="order-card-header">
+          <div>
+            <h3>Pedido ${displayId}</h3>
+            <div class="order-date">${createdAt} · ${paymentLabel}</div>
+          </div>
+          <span class="status-badge ${statusInfo.cls}">${statusInfo.icon} ${statusInfo.label}</span>
+        </div>
+        <div class="order-items">${itemsHtml}</div>
+        <div class="order-totals">
+          <div class="order-total-row"><span>Subtotal</span><span>${formatPrice(order.total)}</span></div>
+          <div class="order-total-row"><span>Envío</span><span style="color:var(--success)">Gratis</span></div>
+          <div class="order-total-row total"><span>Total</span><span>${formatPrice(order.total)}</span></div>
+        </div>
+        ${buildTimeline(order.status)}
+      </div>`;
+  }
+
+  function showError(msg) {
+    document.getElementById('trackingResult').innerHTML = `
+      <div class="tracking-error">
+        <div class="err-icon">🔍</div>
+        <h3>Pedido no encontrado</h3>
+        <p>${msg}</p>
+      </div>`;
+    document.getElementById('trackingResult').style.display = '';
+  }
+
+  async function lookupOrder(rawInput) {
+    const trackError = document.getElementById('trackError');
+    trackError.style.display = 'none';
+
+    const input = rawInput.trim().toUpperCase().replace(/^IPL-?/, '');
+    if (!input) {
+      trackError.textContent = 'Ingresá un número de pedido.';
+      trackError.style.display = '';
+      return;
+    }
+
+    const btn = document.getElementById('trackBtn');
+    btn.disabled = true;
+    btn.textContent = 'Consultando...';
+
+    try {
+      // Try to find by last 8 chars of Firestore doc ID
+      const ordersRef = collection(db, 'orders');
+      const snap = await getDocs(ordersRef);
+      const match = snap.docs.find(d => d.id.slice(-8).toUpperCase() === input);
+
+      if (match) {
+        renderOrder(match.data(), match.id);
+      } else {
+        showError('No encontramos un pedido con ese número. Verificá que esté bien escrito o contactanos a <strong>soporte@iplace.com</strong>.');
+      }
+    } catch (err) {
+      console.error(err);
+      showError('Ocurrió un error al consultar el pedido. Intentá de nuevo en unos minutos.');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Consultar';
+    }
+  }
+
+  document.getElementById('trackBtn').addEventListener('click', () => {
+    lookupOrder(document.getElementById('orderIdInput').value);
+  });
+
+  document.getElementById('orderIdInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') lookupOrder(e.target.value);
+  });
+
+  // Auto-lookup from URL or success page redirect
+  const params = new URLSearchParams(window.location.search);
+  const autoOrder = params.get('order');
+  if (autoOrder) {
+    document.getElementById('orderIdInput').value = autoOrder;
+    lookupOrder(autoOrder);
+  }
+</script>
+<script>
+  (function(){
+    var nav=document.getElementById('navLinks');
+    var pill=document.getElementById('navPill');
+    if(!nav||!pill) return;
+    var items=nav.querySelectorAll('.nav-item > a');
+    function move(el){ var nr=nav.getBoundingClientRect(),lr=el.getBoundingClientRect(); pill.style.left=(lr.left-nr.left)+'px'; pill.style.width=lr.width+'px'; }
+    items.forEach(function(a){ a.addEventListener('mouseenter',function(){move(a);}); });
+    nav.addEventListener('mouseleave',function(){ pill.style.opacity='0'; });
+    nav.addEventListener('mouseenter',function(){ pill.style.opacity='1'; });
+  })();
+  (function(){
+    var h=document.getElementById('header'); if(!h) return; var raf=null;
+    h.addEventListener('mouseenter',function(){h.classList.add('spotlight-active');});
+    h.addEventListener('mouseleave',function(){h.classList.remove('spotlight-active');});
+    h.addEventListener('mousemove',function(e){ if(raf) cancelAnimationFrame(raf); raf=requestAnimationFrame(function(){ var r=h.getBoundingClientRect(); h.style.setProperty('--mx',(e.clientX-r.left)+'px'); h.style.setProperty('--my',(e.clientY-r.top)+'px'); }); });
+  })();
+</script>
+</body>
+</html>
